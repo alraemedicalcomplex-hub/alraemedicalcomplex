@@ -10,6 +10,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
+    "db:clean": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/remove-temp-data.ts",
+    "db:seed:sample": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' scripts/seed-sample-medicines.ts",
     "test": "vitest run"
   },
   "dependencies": {
