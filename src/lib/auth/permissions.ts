@@ -1,0 +1,141 @@
+import { UserRole } from "@prisma/client";
+
+export const PERMISSIONS = {
+  // Medicines catalog
+  MEDICINES_VIEW: "medicines.view",
+  MEDICINES_CREATE: "medicines.create",
+  MEDICINES_UPDATE: "medicines.update",
+  MEDICINES_ARCHIVE: "medicines.archive",
+
+  // Inventory & Batches
+  INVENTORY_VIEW: "inventory.view",
+  INVENTORY_ADJUST: "inventory.adjust",
+  INVENTORY_QUARANTINE: "inventory.quarantine",
+
+  // Sales & POS
+  SALES_VIEW: "sales.view",
+  SALES_CREATE: "sales.create",
+  SALES_REFUND: "sales.refund",
+  SALES_DISCOUNT: "sales.discount",
+
+  // Purchases & Suppliers
+  PURCHASES_VIEW: "purchases.view",
+  PURCHASES_CREATE: "purchases.create",
+  PURCHASES_RECEIVE: "purchases.receive",
+  SUPPLIERS_MANAGE: "suppliers.manage",
+
+  // Customers & Prescriptions
+  CUSTOMERS_MANAGE: "customers.manage",
+  PRESCRIPTIONS_VIEW: "prescriptions.view",
+  PRESCRIPTIONS_VERIFY: "prescriptions.verify",
+
+  // Accounting & Expenses
+  ACCOUNTING_VIEW: "accounting.view",
+  ACCOUNTING_MANAGE: "accounting.manage",
+  EXPENSES_MANAGE: "expenses.manage",
+  CASH_REGISTER_OPERATE: "cash_register.operate",
+
+  // Reports
+  REPORTS_VIEW: "reports.view",
+  REPORTS_EXPORT: "reports.export",
+
+  // Administration
+  USERS_MANAGE: "users.manage",
+  SETTINGS_MANAGE: "settings.manage",
+  AUDIT_VIEW: "audit.view",
+} as const;
+
+export type PermissionCode = (typeof PERMISSIONS)[keyof typeof PERMISSIONS];
+
+/**
+ * Default permission matrix mapped to UserRole
+ */
+export const ROLE_PERMISSIONS: Record<UserRole, PermissionCode[]> = {
+  SUPER_ADMIN: Object.values(PERMISSIONS),
+  ADMIN: Object.values(PERMISSIONS),
+  MANAGER: [
+    PERMISSIONS.MEDICINES_VIEW,
+    PERMISSIONS.MEDICINES_CREATE,
+    PERMISSIONS.MEDICINES_UPDATE,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_ADJUST,
+    PERMISSIONS.INVENTORY_QUARANTINE,
+    PERMISSIONS.SALES_VIEW,
+    PERMISSIONS.SALES_CREATE,
+    PERMISSIONS.SALES_REFUND,
+    PERMISSIONS.SALES_DISCOUNT,
+    PERMISSIONS.PURCHASES_VIEW,
+    PERMISSIONS.PURCHASES_CREATE,
+    PERMISSIONS.PURCHASES_RECEIVE,
+    PERMISSIONS.SUPPLIERS_MANAGE,
+    PERMISSIONS.CUSTOMERS_MANAGE,
+    PERMISSIONS.PRESCRIPTIONS_VIEW,
+    PERMISSIONS.PRESCRIPTIONS_VERIFY,
+    PERMISSIONS.ACCOUNTING_VIEW,
+    PERMISSIONS.EXPENSES_MANAGE,
+    PERMISSIONS.CASH_REGISTER_OPERATE,
+    PERMISSIONS.REPORTS_VIEW,
+    PERMISSIONS.REPORTS_EXPORT,
+  ],
+  PHARMACIST: [
+    PERMISSIONS.MEDICINES_VIEW,
+    PERMISSIONS.MEDICINES_CREATE,
+    PERMISSIONS.MEDICINES_UPDATE,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_ADJUST,
+    PERMISSIONS.INVENTORY_QUARANTINE,
+    PERMISSIONS.SALES_VIEW,
+    PERMISSIONS.SALES_CREATE,
+    PERMISSIONS.SALES_REFUND,
+    PERMISSIONS.PRESCRIPTIONS_VIEW,
+    PERMISSIONS.PRESCRIPTIONS_VERIFY,
+    PERMISSIONS.CUSTOMERS_MANAGE,
+    PERMISSIONS.REPORTS_VIEW,
+  ],
+  CASHIER: [
+    PERMISSIONS.MEDICINES_VIEW,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.SALES_VIEW,
+    PERMISSIONS.SALES_CREATE,
+    PERMISSIONS.CUSTOMERS_MANAGE,
+    PERMISSIONS.CASH_REGISTER_OPERATE,
+  ],
+  INVENTORY_MANAGER: [
+    PERMISSIONS.MEDICINES_VIEW,
+    PERMISSIONS.MEDICINES_CREATE,
+    PERMISSIONS.MEDICINES_UPDATE,
+    PERMISSIONS.INVENTORY_VIEW,
+    PERMISSIONS.INVENTORY_ADJUST,
+    PERMISSIONS.INVENTORY_QUARANTINE,
+    PERMISSIONS.PURCHASES_VIEW,
+    PERMISSIONS.PURCHASES_CREATE,
+    PERMISSIONS.PURCHASES_RECEIVE,
+    PERMISSIONS.SUPPLIERS_MANAGE,
+    PERMISSIONS.REPORTS_VIEW,
+  ],
+  ACCOUNTANT: [
+    PERMISSIONS.SALES_VIEW,
+    PERMISSIONS.PURCHASES_VIEW,
+    PERMISSIONS.ACCOUNTING_VIEW,
+    PERMISSIONS.ACCOUNTING_MANAGE,
+    PERMISSIONS.EXPENSES_MANAGE,
+    PERMISSIONS.CASH_REGISTER_OPERATE,
+    PERMISSIONS.REPORTS_VIEW,
+    PERMISSIONS.REPORTS_EXPORT,
+  ],
+};
+
+export function hasPermission(
+  role: UserRole,
+  requiredPermission: PermissionCode,
+  explicitPermissions?: string[]
+): boolean {
+  if (role === "SUPER_ADMIN" || role === "ADMIN") {
+    return true;
+  }
+  if (explicitPermissions && explicitPermissions.includes(requiredPermission)) {
+    return true;
+  }
+  const defaultList = ROLE_PERMISSIONS[role] || [];
+  return defaultList.includes(requiredPermission);
+}

@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Default: Dark Mode (Dark Navy & Modern Slate) */
+  :root {
+    --background: 222 47% 7%;        /* #0B0F19 - Deep Navy Background */
+    --foreground: 210 40% 98%;       /* #F8FAFC - Crisp Slate White */
+
+    --card: 217 33% 12%;             /* #141C2E - Elevated Slate Card */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 217 33% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 243 75% 65%;          /* #6366F1 - Modern Indigo Accent */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 28% 18%;        /* Slate Secondary */
+    --secondary-foreground: 210 40% 96%;
+
+    --muted: 217 24% 20%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 243 75% 65%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;        /* Rose/Red #EF4444 */
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 28% 18%;          /* Subtle Slate Border */
+    --input: 217 28% 20%;
+    --ring: 243 75% 65%;
+
+    --radius: 0.625rem;
+  }
+
+  /* Explicit Light Mode Override */
+  .light {
+    --background: 210 40% 98%;       /* Crisp Clean Surface */
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;               /* Pure White Card */
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 243 75% 59%;          /* Indigo */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 243 75% 59%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 88%;
+    --ring: 243 75% 59%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom scrollbars for high-density tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Print specific styles for POS thermal receipts (80mm & 58mm) */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .thermal-receipt {
+    width: 80mm;
+    margin: 0;
+    padding: 2mm;
+    font-family: monospace;
+    font-size: 12px;
+  }
+}
