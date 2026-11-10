@@ -179,22 +179,28 @@ export default function ReportsPage() {
       {/* Tab: Inventory Valuation */}
       {activeTab === "inventory" && (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Card className="p-5">
-              <span className="text-xs font-semibold text-muted-foreground uppercase">Cost Value of Inventory</span>
-              <h3 className="text-2xl font-bold text-indigo-400 mt-1">
-                {formatCurrency(totalInventoryValuation)}
-              </h3>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Calculated at wholesale purchase cost</p>
-            </Card>
+          <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+            <div className="grid grid-cols-1 sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+              <div className="p-5 space-y-1">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Cost Value of Inventory
+                </span>
+                <h3 className="text-2xl font-bold text-indigo-400 font-mono">
+                  {formatCurrency(totalInventoryValuation)}
+                </h3>
+                <p className="text-[11px] text-muted-foreground">Calculated at wholesale purchase cost</p>
+              </div>
 
-            <Card className="p-5">
-              <span className="text-xs font-semibold text-muted-foreground uppercase">Retail Potential (MRP)</span>
-              <h3 className="text-2xl font-bold text-emerald-400 mt-1">
-                {formatCurrency(totalRetailValuation)}
-              </h3>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Potential realization at Maximum Retail Price</p>
-            </Card>
+              <div className="p-5 space-y-1">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Retail Potential (MRP)
+                </span>
+                <h3 className="text-2xl font-bold text-emerald-400 font-mono">
+                  {formatCurrency(totalRetailValuation)}
+                </h3>
+                <p className="text-[11px] text-muted-foreground">Potential realization at Maximum Retail Price</p>
+              </div>
+            </div>
           </div>
 
           <Card>

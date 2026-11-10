@@ -11,6 +11,7 @@ import {
   CreditCard,
   DollarSign,
   AlertCircle,
+  Search,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +36,7 @@ interface SupplierItem {
 export default function SuppliersPage() {
   const [suppliers, setSuppliers] = useState<SupplierItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Modals
   const [showAddModal, setShowAddModal] = useState(false);
@@ -132,8 +134,24 @@ export default function SuppliersPage() {
     }
   };
 
+  const totalPayables = suppliers.reduce((acc, s) => acc + Number(s.balance || 0), 0);
+  const pendingSuppliersCount = suppliers.filter((s) => Number(s.balance) > 0).length;
+
+  const filteredSuppliers = suppliers.filter((s) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      s.name.toLowerCase().includes(q) ||
+      (s.contactPerson && s.contactPerson.toLowerCase().includes(q)) ||
+      s.phone.toLowerCase().includes(q) ||
+      (s.email && s.email.toLowerCase().includes(q)) ||
+      (s.ntnNumber && s.ntnNumber.toLowerCase().includes(q))
+    );
+  });
+
   return (
     <div className="space-y-6">
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -155,80 +173,161 @@ export default function SuppliersPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {isLoading ? (
-          <div className="col-span-full py-12 text-center text-muted-foreground text-xs">
-            Loading supplier profiles...
+      {/* Top Unified Summary Ribbon */}
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Total Registered Suppliers
+              </span>
+              <h3 className="text-2xl font-bold text-foreground font-mono">{suppliers.length}</h3>
+              <p className="text-[11px] text-muted-foreground">Authorized pharma distributors</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+              <Truck className="h-4 w-4" />
+            </div>
           </div>
-        ) : suppliers.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-muted-foreground text-xs">
-            No suppliers found. Click &quot;Add New Supplier&quot; to register distributors.
+
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Total Accounts Payable
+              </span>
+              <h3 className="text-2xl font-bold text-amber-400 font-mono">{formatCurrency(totalPayables)}</h3>
+              <p className="text-[11px] text-muted-foreground">Outstanding procurement liability</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+              <DollarSign className="h-4 w-4" />
+            </div>
           </div>
-        ) : (
-          suppliers.map((s) => (
-            <Card key={s.id} className="p-5 flex flex-col justify-between hover:border-indigo-500/40 transition">
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 className="font-bold text-foreground text-sm">{s.name}</h3>
-                    {s.contactPerson && (
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        Rep: {s.contactPerson}
-                      </p>
-                    )}
-                  </div>
-                  <Badge variant={Number(s.balance) > 0 ? "warning" : "success"} className="text-[10px]">
-                    {Number(s.balance) > 0 ? "Pending Balance" : "Clear"}
-                  </Badge>
-                </div>
 
-                <div className="space-y-1.5 text-xs text-muted-foreground pt-1 border-t border-border/60">
-                  <p className="flex items-center gap-2">
-                    <Phone className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
-                    <span>{s.phone}</span>
-                  </p>
-                  {s.email && (
-                    <p className="flex items-center gap-2">
-                      <Mail className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
-                      <span>{s.email}</span>
-                    </p>
-                  )}
-                  {s.address && (
-                    <p className="flex items-center gap-2">
-                      <MapPin className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
-                      <span className="line-clamp-1">{s.address}</span>
-                    </p>
-                  )}
-                  {s.ntnNumber && (
-                    <p className="font-mono text-[10px] text-slate-400">
-                      NTN: {s.ntnNumber} • Terms: {s.paymentTerms || "Cash"}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-muted-foreground block">Accounts Payable:</span>
-                  <span className="font-mono font-bold text-sm text-foreground">
-                    {formatCurrency(s.balance)}
-                  </span>
-                </div>
-
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-8 text-xs text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/10"
-                  onClick={() => setSelectedPaySupplier(s)}
-                >
-                  <DollarSign className="h-3.5 w-3.5 mr-1" />
-                  Pay
-                </Button>
-              </div>
-            </Card>
-          ))
-        )}
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Distributors with Due Balances
+              </span>
+              <h3 className="text-2xl font-bold text-rose-400 font-mono">{pendingSuppliersCount}</h3>
+              <p className="text-[11px] text-muted-foreground">Require invoice settlement</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center">
+              <AlertCircle className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Filter / Search Bar */}
+      <Card className="p-3">
+        <div className="max-w-md">
+          <Input
+            placeholder="Search suppliers by name, representative, phone, or NTN..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon={<Search className="h-4 w-4" />}
+          />
+        </div>
+      </Card>
+
+      {/* Enterprise Full-Width Supplier Data Table */}
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-border bg-muted/40 font-semibold text-muted-foreground">
+                  <th className="py-3 px-4">Supplier & Representative</th>
+                  <th className="py-3 px-4">Contact Details</th>
+                  <th className="py-3 px-4">Address / City</th>
+                  <th className="py-3 px-4">NTN / Registration</th>
+                  <th className="py-3 px-4">Payment Terms</th>
+                  <th className="py-3 px-4 text-right">Accounts Payable</th>
+                  <th className="py-3 px-4 text-center">Status</th>
+                  <th className="py-3 px-4 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={8} className="py-12 text-center text-muted-foreground">
+                      Loading supplier ledger...
+                    </td>
+                  </tr>
+                ) : filteredSuppliers.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="py-12 text-center text-muted-foreground">
+                      {searchQuery ? "No suppliers match your search criteria." : "No suppliers registered. Click 'Add New Supplier' to add."}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredSuppliers.map((s) => (
+                    <tr key={s.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-foreground text-sm">{s.name}</div>
+                        {s.contactPerson ? (
+                          <div className="text-[11px] text-muted-foreground">Rep: {s.contactPerson}</div>
+                        ) : (
+                          <div className="text-[11px] text-muted-foreground">Direct Account</div>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 space-y-0.5">
+                        <div className="flex items-center gap-1.5 font-mono text-foreground">
+                          <Phone className="h-3 w-3 text-indigo-400 shrink-0" />
+                          <span>{s.phone}</span>
+                        </div>
+                        {s.email && (
+                          <div className="flex items-center gap-1.5 text-muted-foreground">
+                            <Mail className="h-3 w-3 text-indigo-400 shrink-0" />
+                            <span>{s.email}</span>
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-3.5 px-4 text-muted-foreground max-w-[180px] truncate">
+                        {s.address || "—"}
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="font-mono text-[11px] text-slate-300">
+                          {s.ntnNumber || "Unregistered"}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-muted/60 text-foreground border border-border/60">
+                          {s.paymentTerms || "Net 30 Days"}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <span
+                          className={`font-mono font-bold text-sm ${
+                            Number(s.balance) > 0 ? "text-amber-400" : "text-emerald-400"
+                          }`}
+                        >
+                          {formatCurrency(s.balance)}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <Badge variant={Number(s.balance) > 0 ? "warning" : "success"} className="text-[10px]">
+                          {Number(s.balance) > 0 ? "Due" : "Settled"}
+                        </Badge>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 text-xs text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/10 px-2.5"
+                          onClick={() => setSelectedPaySupplier(s)}
+                        >
+                          <DollarSign className="h-3.5 w-3.5 mr-1" />
+                          Pay
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Modal: Record Supplier Payment */}
       {selectedPaySupplier && (

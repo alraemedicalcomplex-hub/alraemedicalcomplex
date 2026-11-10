@@ -11,6 +11,7 @@ import {
   DollarSign,
   Search,
   Sparkles,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -130,8 +131,13 @@ export default function CustomersPage() {
     }
   };
 
+  const totalReceivables = customers.reduce((acc, c) => acc + Number(c.balance || 0), 0);
+  const customersWithDue = customers.filter((c) => Number(c.balance) > 0).length;
+  const totalLoyaltyPoints = customers.reduce((acc, c) => acc + Number(c.loyaltyPoints || 0), 0);
+
   return (
     <div className="space-y-6">
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -153,7 +159,52 @@ export default function CustomersPage() {
         </Button>
       </div>
 
-      <Card className="p-4">
+      {/* Top Unified Summary Ribbon */}
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Total Registered Patients
+              </span>
+              <h3 className="text-2xl font-bold text-foreground font-mono">{customers.length}</h3>
+              <p className="text-[11px] text-muted-foreground">Active dispensary patient records</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+              <Users className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Total Patient Receivables
+              </span>
+              <h3 className="text-2xl font-bold text-indigo-400 font-mono">{formatCurrency(totalReceivables)}</h3>
+              <p className="text-[11px] text-muted-foreground">{customersWithDue} accounts with unpaid balances</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+              <DollarSign className="h-4 w-4" />
+            </div>
+          </div>
+
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Active Loyalty Points
+              </span>
+              <h3 className="text-2xl font-bold text-amber-400 font-mono">{totalLoyaltyPoints.toLocaleString()}</h3>
+              <p className="text-[11px] text-muted-foreground">Patient reward points accrued</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+              <Sparkles className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter / Search Bar */}
+      <Card className="p-3">
         <div className="max-w-md">
           <Input
             placeholder="Search patient by name or phone (e.g. 0300...)..."
@@ -164,77 +215,105 @@ export default function CustomersPage() {
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {isLoading ? (
-          <div className="col-span-full py-12 text-center text-muted-foreground text-xs">
-            Loading patient records...
-          </div>
-        ) : customers.length === 0 ? (
-          <div className="col-span-full py-12 text-center text-muted-foreground text-xs">
-            No patient profiles found.
-          </div>
-        ) : (
-          customers.map((c) => (
-            <Card key={c.id} className="p-5 flex flex-col justify-between hover:border-indigo-500/40 transition">
-              <div className="space-y-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <h3 className="font-bold text-foreground text-sm">{c.name}</h3>
-                    <p className="text-xs font-mono text-muted-foreground mt-0.5">{c.phone}</p>
-                  </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <Badge variant={Number(c.balance) > 0 ? "warning" : "success"} className="text-[10px]">
-                      {Number(c.balance) > 0 ? "Balance Due" : "Clear"}
-                    </Badge>
-                    <span className="text-[10px] text-amber-400 font-semibold flex items-center gap-1">
-                      <Sparkles className="h-3 w-3" /> {c.loyaltyPoints} pts
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-1 text-xs text-muted-foreground pt-1 border-t border-border/60">
-                  {c.email && (
-                    <p className="flex items-center gap-2">
-                      <Mail className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
-                      <span>{c.email}</span>
-                    </p>
-                  )}
-                  {c.address && (
-                    <p className="flex items-center gap-2">
-                      <MapPin className="h-3.5 w-3.5 text-indigo-400 shrink-0" />
-                      <span className="line-clamp-1">{c.address}</span>
-                    </p>
-                  )}
-                  <p className="text-[10px] text-slate-400">
-                    Credit Limit: {formatCurrency(c.creditLimit)} • Joined: {formatDate(c.createdAt)}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-border flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] text-muted-foreground block">Outstanding Balance:</span>
-                  <span className={`font-mono font-bold text-sm ${Number(c.balance) > 0 ? "text-amber-400" : "text-foreground"}`}>
-                    {formatCurrency(c.balance)}
-                  </span>
-                </div>
-
-                {Number(c.balance) > 0 && (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 text-xs text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/10"
-                    onClick={() => setSelectedPayCustomer(c)}
-                  >
-                    <DollarSign className="h-3.5 w-3.5 mr-1" />
-                    Receive Cash
-                  </Button>
+      {/* Enterprise Full-Width Patient Data Table */}
+      <Card>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="border-b border-border bg-muted/40 font-semibold text-muted-foreground">
+                  <th className="py-3 px-4">Patient Name</th>
+                  <th className="py-3 px-4">Contact Phone</th>
+                  <th className="py-3 px-4">Email / Address</th>
+                  <th className="py-3 px-4 text-right">Credit Ceiling</th>
+                  <th className="py-3 px-4 text-right">Outstanding Due</th>
+                  <th className="py-3 px-4 text-center">Loyalty Points</th>
+                  <th className="py-3 px-4 text-center">Status</th>
+                  <th className="py-3 px-4 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={8} className="py-12 text-center text-muted-foreground">
+                      Loading patient database...
+                    </td>
+                  </tr>
+                ) : customers.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} className="py-12 text-center text-muted-foreground">
+                      {searchQuery ? "No patients match your search criteria." : "No patient records registered."}
+                    </td>
+                  </tr>
+                ) : (
+                  customers.map((c) => (
+                    <tr key={c.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="py-3.5 px-4">
+                        <div className="font-semibold text-foreground text-sm">{c.name}</div>
+                        <div className="text-[11px] text-muted-foreground">Registered: {formatDate(c.createdAt)}</div>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <div className="flex items-center gap-1.5 font-mono text-foreground font-medium">
+                          <Phone className="h-3 w-3 text-indigo-400 shrink-0" />
+                          <span>{c.phone}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 space-y-0.5 text-muted-foreground max-w-[200px] truncate">
+                        {c.address && <div>{c.address}</div>}
+                        {c.email && (
+                          <div className="flex items-center gap-1 text-[11px] text-slate-400">
+                            <Mail className="h-3 w-3 text-indigo-400 shrink-0" />
+                            <span>{c.email}</span>
+                          </div>
+                        )}
+                        {!c.address && !c.email && <div>—</div>}
+                      </td>
+                      <td className="py-3.5 px-4 text-right font-mono text-slate-300">
+                        {formatCurrency(c.creditLimit)}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <span
+                          className={`font-mono font-bold text-sm ${
+                            Number(c.balance) > 0 ? "text-amber-400" : "text-emerald-400"
+                          }`}
+                        >
+                          {formatCurrency(c.balance)}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <Sparkles className="h-3 w-3" />
+                          {c.loyaltyPoints} pts
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <Badge variant={Number(c.balance) > 0 ? "warning" : "success"} className="text-[10px]">
+                          {Number(c.balance) > 0 ? "Balance Due" : "Clear"}
+                        </Badge>
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        {Number(c.balance) > 0 ? (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-7 text-xs text-emerald-300 border-emerald-500/30 hover:bg-emerald-500/10 px-2.5"
+                            onClick={() => setSelectedPayCustomer(c)}
+                          >
+                            <DollarSign className="h-3.5 w-3.5 mr-1" />
+                            Collect
+                          </Button>
+                        ) : (
+                          <span className="text-[11px] text-muted-foreground">All Paid</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))
                 )}
-              </div>
-            </Card>
-          ))
-        )}
-      </div>
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Modal: Collect Payment */}
       {selectedPayCustomer && (

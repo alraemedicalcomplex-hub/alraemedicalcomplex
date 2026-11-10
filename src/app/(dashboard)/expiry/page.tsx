@@ -135,76 +135,76 @@ export default function ExpiryManagementPage() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      {/* Sleek Segmented Pill Filter Bar */}
+      <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-2xl border border-border bg-card shadow-sm">
         <button
           onClick={() => setActiveTab("30")}
-          className={`p-3 rounded-xl border text-left transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "30"
-              ? "border-red-500 bg-red-500/10 text-red-400"
-              : "border-border bg-card text-muted-foreground hover:bg-muted"
+              ? "bg-red-500/15 text-red-400 border border-red-500/30 shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
-          <p className="text-xs font-semibold">Critical (≤ 30 Days)</p>
-          <p className="font-mono text-xl font-bold mt-1 text-foreground">
+          <span>Critical (≤ 30 Days)</span>
+          <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-red-500/20 text-red-300 font-bold">
             {data?.summary.within30Count || 0}
-          </p>
+          </span>
         </button>
 
         <button
           onClick={() => setActiveTab("60")}
-          className={`p-3 rounded-xl border text-left transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "60"
-              ? "border-amber-500 bg-amber-500/10 text-amber-400"
-              : "border-border bg-card text-muted-foreground hover:bg-muted"
+              ? "bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
-          <p className="text-xs font-semibold">Urgent (31-60 Days)</p>
-          <p className="font-mono text-xl font-bold mt-1 text-foreground">
+          <span>Urgent (31-60 Days)</span>
+          <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">
             {data?.summary.within60Count || 0}
-          </p>
+          </span>
         </button>
 
         <button
           onClick={() => setActiveTab("90")}
-          className={`p-3 rounded-xl border text-left transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "90"
-              ? "border-indigo-500 bg-indigo-500/10 text-indigo-400"
-              : "border-border bg-card text-muted-foreground hover:bg-muted"
+              ? "bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
-          <p className="text-xs font-semibold">Watchlist (61-90 Days)</p>
-          <p className="font-mono text-xl font-bold mt-1 text-foreground">
+          <span>Watchlist (61-90 Days)</span>
+          <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold">
             {data?.summary.within90Count || 0}
-          </p>
+          </span>
         </button>
 
         <button
           onClick={() => setActiveTab("expired")}
-          className={`p-3 rounded-xl border text-left transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "expired"
-              ? "border-red-600 bg-red-600/20 text-red-300"
-              : "border-border bg-card text-muted-foreground hover:bg-muted"
+              ? "bg-rose-600/20 text-rose-300 border border-rose-500/40 shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
-          <p className="text-xs font-semibold">Already Expired</p>
-          <p className="font-mono text-xl font-bold mt-1 text-foreground">
+          <span>Expired Stock</span>
+          <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-rose-600/30 text-rose-200 font-bold">
             {data?.summary.expiredCount || 0}
-          </p>
+          </span>
         </button>
 
         <button
           onClick={() => setActiveTab("quarantined")}
-          className={`p-3 rounded-xl border text-left transition-all ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
             activeTab === "quarantined"
-              ? "border-violet-500 bg-violet-500/10 text-violet-400"
-              : "border-border bg-card text-muted-foreground hover:bg-muted"
+              ? "bg-violet-500/15 text-violet-400 border border-violet-500/30 shadow-sm"
+              : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
           }`}
         >
-          <p className="text-xs font-semibold">Quarantined Stock</p>
-          <p className="font-mono text-xl font-bold mt-1 text-foreground">
+          <span>Quarantined</span>
+          <span className="font-mono text-[11px] px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 font-bold">
             {data?.summary.quarantinedCount || 0}
-          </p>
+          </span>
         </button>
       </div>
 

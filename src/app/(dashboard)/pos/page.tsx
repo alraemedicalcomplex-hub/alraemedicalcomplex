@@ -387,16 +387,16 @@ export default function POSTerminalPage() {
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[520px] overflow-y-auto pr-1">
+              <div className="divide-y divide-border/60 max-h-[520px] overflow-y-auto -mx-4 -my-4">
                 {searchResults.map((item) => (
-                  <button
+                  <div
                     key={item.id}
                     onClick={() => addToCart(item)}
-                    className="flex flex-col justify-between p-3 rounded-xl border border-border/80 bg-card hover:border-indigo-500/50 hover:bg-indigo-950/20 text-left transition-all group"
+                    className="flex items-center justify-between p-3.5 px-4 hover:bg-indigo-500/5 cursor-pointer transition-colors group"
                   >
-                    <div>
-                      <div className="flex items-center justify-between gap-1">
-                        <span className="font-semibold text-xs text-foreground group-hover:text-indigo-300">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-xs text-foreground group-hover:text-indigo-400">
                           {item.name}
                         </span>
                         {item.prescriptionRequired && (
@@ -405,29 +405,36 @@ export default function POSTerminalPage() {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-[11px] text-muted-foreground line-clamp-1 mt-0.5">
-                        {item.genericName}
-                      </p>
-                      <p className="text-[10px] text-slate-500 mt-1">
-                        {item.strength} • {item.dosageForm}
+                      <p className="text-[11px] text-muted-foreground">
+                        {item.genericName} • <span className="text-slate-400">{item.strength} {item.dosageForm}</span>
                       </p>
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between pt-2 border-t border-border/40">
-                      <span className="font-mono text-xs font-bold text-emerald-400">
-                        {formatCurrency(item.unitPrice)}
-                      </span>
-                      <span
-                        className={`text-[10px] font-mono ${
-                          item.availableStock <= 15
-                            ? "text-amber-400 font-bold"
-                            : "text-muted-foreground"
-                        }`}
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <div className="font-mono text-xs font-bold text-emerald-400">
+                          {formatCurrency(item.unitPrice)}
+                        </div>
+                        <div
+                          className={`text-[10px] font-mono ${
+                            item.availableStock <= 15
+                              ? "text-amber-400 font-bold"
+                              : "text-muted-foreground"
+                          }`}
+                        >
+                          {item.availableStock} in stock
+                        </div>
+                      </div>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-7 text-xs px-2.5 text-indigo-400 border-indigo-500/30 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-indigo-600"
                       >
-                        Stock: {item.availableStock}
-                      </span>
+                        + Add
+                      </Button>
                     </div>
-                  </button>
+                  </div>
                 ))}
               </div>
             )}

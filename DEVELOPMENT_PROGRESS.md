@@ -21,6 +21,7 @@
 | **Module 13: Staff & Access Control** | 🟢 Complete | Staff directory, role-based access control, account activation/suspension |
 | **Module 14: Notification Center** | 🟢 Complete | In-app alerts for stockouts, short-expiry batches, and customer receivables |
 | **Module 15: Settings & Configuration** | 🟢 Complete | Configurable pharmacy name, DSL license, NTN/STRN, thermal printer width (80mm) |
+| **UI/UX Overhaul: Enterprise Data Tables & Telemetry** | 🟢 Complete | Replaced cluttered multi-column card grids with full-width Data Tables and unified KPI ribbons across Dashboard, Suppliers, Customers, Prescriptions, Staff, and Expiry |
 | **Quality Assurance & Verification** | 🟢 Complete | Vitest automated test suite passing (9/9 tests), full `next build` 45/45 static pages |
 
 ---

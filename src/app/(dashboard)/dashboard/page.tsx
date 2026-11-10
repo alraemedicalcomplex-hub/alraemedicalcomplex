@@ -3,7 +3,6 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getDashboardMetrics } from "@/services/dashboard.service";
-import { MetricCard } from "@/features/dashboard/components/metric-card";
 import { SalesChart } from "@/features/dashboard/components/sales-chart";
 import { RecentSalesTable } from "@/features/dashboard/components/recent-sales-table";
 import { InventoryStatusCard } from "@/features/dashboard/components/inventory-status-card";
@@ -75,80 +74,172 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Row 1: Today's Financial Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard
-          title="Today's Sales"
-          value={formatCurrency(metrics.todaySales)}
-          subtitle={`Yesterday: ${formatCurrency(metrics.yesterdaySales)}`}
-          icon={Receipt}
-          variant="indigo"
-          trend={{
-            value: metrics.yesterdaySales > 0
-              ? `${(((metrics.todaySales - metrics.yesterdaySales) / metrics.yesterdaySales) * 100).toFixed(1)}% vs yesterday`
-              : "Active Day",
-            isPositive: metrics.todaySales >= metrics.yesterdaySales,
-          }}
-        />
+      {/* Primary Financial KPI Ribbon */}
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+          {/* 1. Today's Sales */}
+          <div className="p-5 sm:p-6 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Today&apos;s Sales
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-400">
+                <Receipt className="h-4 w-4" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold tracking-tight text-foreground font-mono">
+                {formatCurrency(metrics.todaySales)}
+              </h3>
+              <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
+                <span
+                  className={`font-semibold ${
+                    metrics.todaySales >= metrics.yesterdaySales ? "text-emerald-400" : "text-amber-400"
+                  }`}
+                >
+                  {metrics.todaySales >= metrics.yesterdaySales ? "↑" : "↓"}{" "}
+                  {metrics.yesterdaySales > 0
+                    ? `${(((metrics.todaySales - metrics.yesterdaySales) / metrics.yesterdaySales) * 100).toFixed(1)}%`
+                    : "Active"}
+                </span>
+                <span>vs yesterday ({formatCurrency(metrics.yesterdaySales)})</span>
+              </div>
+            </div>
+          </div>
 
-        <MetricCard
-          title="Monthly Revenue"
-          value={formatCurrency(metrics.monthlyRevenue)}
-          subtitle="Gross retail dispensing turnover"
-          icon={TrendingUp}
-          variant="success"
-        />
+          {/* 2. Monthly Revenue */}
+          <div className="p-5 sm:p-6 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Monthly Turnover
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                <TrendingUp className="h-4 w-4" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold tracking-tight text-foreground font-mono">
+                {formatCurrency(metrics.monthlyRevenue)}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Gross retail dispensing revenue (MTD)
+              </p>
+            </div>
+          </div>
 
-        <MetricCard
-          title="Estimated Gross Profit"
-          value={formatCurrency(metrics.grossProfit)}
-          subtitle={`Net Profit: ${formatCurrency(metrics.netProfit)}`}
-          icon={Wallet}
-          variant={metrics.netProfit >= 0 ? "success" : "destructive"}
-        />
+          {/* 3. Estimated Profit */}
+          <div className="p-5 sm:p-6 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Estimated Gross Profit
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400">
+                <Wallet className="h-4 w-4" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold tracking-tight text-emerald-400 font-mono">
+                {formatCurrency(metrics.grossProfit)}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                Estimated Net: <span className="font-semibold text-foreground">{formatCurrency(metrics.netProfit)}</span>
+              </p>
+            </div>
+          </div>
 
-        <MetricCard
-          title="Inventory Valuation"
-          value={formatCurrency(metrics.inventoryValuation)}
-          subtitle={`${metrics.totalStockQuantity} units across ${metrics.totalMedicines} medicines`}
-          icon={Boxes}
-          variant="default"
-        />
+          {/* 4. Inventory Valuation */}
+          <div className="p-5 sm:p-6 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Total Inventory Valuation
+              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
+                <Boxes className="h-4 w-4" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold tracking-tight text-foreground font-mono">
+                {formatCurrency(metrics.inventoryValuation)}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">
+                {metrics.totalStockQuantity.toLocaleString()} units across {metrics.totalMedicines} formulary drugs
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Row 2: Payables, Receivables & Stock Highlights */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <MetricCard
-          title="Supplier Payables"
-          value={formatCurrency(metrics.supplierPayables)}
-          subtitle="Pending procurement invoices"
-          icon={Truck}
-          variant="warning"
-        />
+      {/* Secondary Working Capital & Health Ribbon */}
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+          {/* Supplier Payables */}
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Supplier Payables
+              </span>
+              <h4 className="text-lg font-bold text-amber-400 font-mono">
+                {formatCurrency(metrics.supplierPayables)}
+              </h4>
+              <p className="text-[11px] text-muted-foreground">Pending distributor billing</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <Truck className="h-4 w-4" />
+            </div>
+          </div>
 
-        <MetricCard
-          title="Customer Receivables"
-          value={formatCurrency(metrics.customerReceivables)}
-          subtitle="Outstanding patient credit balance"
-          icon={Users}
-          variant="indigo"
-        />
+          {/* Customer Receivables */}
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Patient Receivables
+              </span>
+              <h4 className="text-lg font-bold text-indigo-400 font-mono">
+                {formatCurrency(metrics.customerReceivables)}
+              </h4>
+              <p className="text-[11px] text-muted-foreground">Outstanding customer credit</p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <Users className="h-4 w-4" />
+            </div>
+          </div>
 
-        <MetricCard
-          title="Expiring Batches (90d)"
-          value={`${metrics.expiringCount} Batches`}
-          subtitle={`Expired Batches: ${metrics.expiredCount}`}
-          icon={AlertTriangle}
-          variant={metrics.expiringCount > 0 ? "warning" : "default"}
-        />
+          {/* Expiring Batches */}
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Near-Expiry Batches
+              </span>
+              <h4 className="text-lg font-bold text-rose-400 font-mono">
+                {metrics.expiringCount} Batches
+              </h4>
+              <p className="text-[11px] text-muted-foreground">
+                {metrics.expiredCount > 0 ? `${metrics.expiredCount} expired batches` : "0 expired stock"}
+              </p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+              <AlertTriangle className="h-4 w-4" />
+            </div>
+          </div>
 
-        <MetricCard
-          title="Low & Depleted Stock"
-          value={`${metrics.lowStockCount + metrics.outOfStockCount} Items`}
-          subtitle={`${metrics.outOfStockCount} zero stock, ${metrics.lowStockCount} below minimum`}
-          icon={Boxes}
-          variant={metrics.outOfStockCount > 0 ? "destructive" : "warning"}
-        />
+          {/* Stock Depletions */}
+          <div className="p-4 sm:p-5 flex items-center justify-between">
+            <div className="space-y-1">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                Low & Depleted Stock
+              </span>
+              <h4 className="text-lg font-bold text-foreground font-mono">
+                {metrics.lowStockCount + metrics.outOfStockCount} Items
+              </h4>
+              <p className="text-[11px] text-muted-foreground">
+                {metrics.outOfStockCount} out of stock • {metrics.lowStockCount} low
+              </p>
+            </div>
+            <div className="h-9 w-9 rounded-lg bg-muted/60 border border-border flex items-center justify-center text-muted-foreground">
+              <Boxes className="h-4 w-4" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Row 3: Visual Analytics Chart & Inventory Breakdown */}

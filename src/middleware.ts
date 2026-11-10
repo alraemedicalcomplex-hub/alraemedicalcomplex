@@ -7,7 +7,6 @@ const SECRET_KEY = new TextEncoder().encode(
   process.env.AUTH_SECRET || "default_super_secret_pharmacy_key_2026_at_least_32_chars!"
 );
 
-// Protected route segments
 const PROTECTED_PREFIXES = [
   "/dashboard",
   "/pos",
@@ -28,6 +27,16 @@ const PROTECTED_PREFIXES = [
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Explicit bypass for internal next assets, static files, and login API
+  if (
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api/auth/login") ||
+    pathname.startsWith("/favicon") ||
+    pathname.includes(".")
+  ) {
+    return NextResponse.next();
+  }
 
   // Root redirect to dashboard
   if (pathname === "/") {
@@ -51,7 +60,6 @@ export async function middleware(request: NextRequest) {
       await jwtVerify(token, SECRET_KEY);
       return NextResponse.next();
     } catch {
-      // Invalid or expired token
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("from", pathname);
       const response = NextResponse.redirect(loginUrl);
@@ -66,7 +74,7 @@ export async function middleware(request: NextRequest) {
       await jwtVerify(token, SECRET_KEY);
       return NextResponse.redirect(new URL("/dashboard", request.url));
     } catch {
-      // Token expired, allow staying on login page
+      // Token invalid, allow login page
     }
   }
 
@@ -74,7 +82,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|images|logos|api/auth/login).*)",
-  ],
+  matcher: ["/:path*"],
 };

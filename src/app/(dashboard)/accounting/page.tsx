@@ -107,43 +107,53 @@ export default function AccountingPage() {
         </Button>
       </div>
 
-      {/* P&L Overview Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-5">
-          <span className="text-xs font-semibold text-muted-foreground uppercase">Sales Revenue (MTD)</span>
-          <h3 className="text-2xl font-bold text-foreground mt-1">
-            {formatCurrency(data?.summary?.totalSales || 0)}
-          </h3>
-          <p className="text-[11px] text-muted-foreground mt-0.5">Gross pharmaceutical sales turnover</p>
-        </Card>
+      {/* Unified P&L Financial Ribbon */}
+      <div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-border/60">
+          <div className="p-5 space-y-1">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Sales Revenue (MTD)
+            </span>
+            <h3 className="text-2xl font-bold text-foreground font-mono">
+              {formatCurrency(data?.summary?.totalSales || 0)}
+            </h3>
+            <p className="text-[11px] text-muted-foreground">Gross pharmaceutical turnover</p>
+          </div>
 
-        <Card className="p-5">
-          <span className="text-xs font-semibold text-muted-foreground uppercase">Procurement Cost</span>
-          <h3 className="text-2xl font-bold text-blue-400 mt-1">
-            {formatCurrency(data?.summary?.totalPurchases || 0)}
-          </h3>
-          <p className="text-[11px] text-muted-foreground mt-0.5">Purchases billed by distributors</p>
-        </Card>
+          <div className="p-5 space-y-1">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Procurement Cost (COGS)
+            </span>
+            <h3 className="text-2xl font-bold text-blue-400 font-mono">
+              {formatCurrency(data?.summary?.totalPurchases || 0)}
+            </h3>
+            <p className="text-[11px] text-muted-foreground">Stock billed by distributors</p>
+          </div>
 
-        <Card className="p-5">
-          <span className="text-xs font-semibold text-muted-foreground uppercase">Operating Expenses</span>
-          <h3 className="text-2xl font-bold text-rose-400 mt-1">
-            {formatCurrency(data?.summary?.totalExpenses || 0)}
-          </h3>
-          <p className="text-[11px] text-muted-foreground mt-0.5">Rent, utility bills, salaries & supplies</p>
-        </Card>
+          <div className="p-5 space-y-1">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Operating Expenses
+            </span>
+            <h3 className="text-2xl font-bold text-rose-400 font-mono">
+              {formatCurrency(data?.summary?.totalExpenses || 0)}
+            </h3>
+            <p className="text-[11px] text-muted-foreground">Rent, utility bills, salaries & supplies</p>
+          </div>
 
-        <Card className="p-5">
-          <span className="text-xs font-semibold text-muted-foreground uppercase">Estimated Net Profit</span>
-          <h3
-            className={`text-2xl font-bold mt-1 ${
-              (data?.summary?.netProfit || 0) >= 0 ? "text-emerald-400" : "text-rose-400"
-            }`}
-          >
-            {formatCurrency(data?.summary?.netProfit || 0)}
-          </h3>
-          <p className="text-[11px] text-muted-foreground mt-0.5">Revenue minus COGS and expenses</p>
-        </Card>
+          <div className="p-5 space-y-1">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              Estimated Net Profit
+            </span>
+            <h3
+              className={`text-2xl font-bold font-mono ${
+                (data?.summary?.netProfit || 0) >= 0 ? "text-emerald-400" : "text-rose-400"
+              }`}
+            >
+              {formatCurrency(data?.summary?.netProfit || 0)}
+            </h3>
+            <p className="text-[11px] text-muted-foreground">Turnover minus COGS & operational overheads</p>
+          </div>
+        </div>
       </div>
 
       {/* Cash Registers & Recent Expenses Grid */}
