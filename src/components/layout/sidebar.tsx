@@ -106,10 +106,10 @@ export function Sidebar({
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-sm tracking-wide text-white leading-tight">
-                SUFI PHARMACY
+                AL RAE HOSPITAL
               </span>
               <span className="text-[11px] font-medium text-emerald-400">
-                DRAP Certified
+                Hospital Pharmacy & ERP
               </span>
             </div>
           </div>

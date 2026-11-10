@@ -12,13 +12,13 @@ async function main() {
     update: {},
     create: {
       id: "00000000-0000-0000-0000-000000000001",
-      name: "Sufi Pharmacy & Wellness",
-      legalName: "Sufi Healthcare Private Limited",
+      name: "Al Rae Hospital",
+      legalName: "Al Rae Hospital Private Limited",
       dslNumber: "DSL-LHR-2024-9812",
       ntnNumber: "4329012-7",
       strnNumber: "3277876123456",
       phone: "+92 42 35889900",
-      email: "info@sufipharmacy.pk",
+      email: "info@alraehospital.pk",
       address: "Plot 14-B, Commercial Zone, Phase 5 DHA",
       city: "Lahore",
       country: "Pakistan",
@@ -45,52 +45,16 @@ async function main() {
     },
   });
 
-  // 3. Seed Users across all 7 Roles
-  const passwordHash = await bcrypt.hash("Admin@Pharmacy2026!", 10);
-  const staffHash = await bcrypt.hash("Staff@Pharmacy2026!", 10);
+  // 3. Seed Single Super Admin: Sufiyan
+  const passwordHash = await bcrypt.hash("Password123!", 10);
 
   const usersData = [
     {
-      email: "admin@pharmacy.local",
-      fullName: "Dr. Tariq Mahmood (Super Admin)",
+      email: "sufiyan@alraehospital.pk",
+      fullName: "Sufiyan (Super Admin)",
       role: UserRole.SUPER_ADMIN,
       passwordHash: passwordHash,
-      phone: "+92 300 1234567",
-    },
-    {
-      email: "manager@pharmacy.local",
-      fullName: "Kamran Akram (Pharmacy Manager)",
-      role: UserRole.MANAGER,
-      passwordHash: staffHash,
-      phone: "+92 301 2345678",
-    },
-    {
-      email: "pharmacist@pharmacy.local",
-      fullName: "Dr. Ayesha Siddiqa (Chief Pharmacist - Pharm.D)",
-      role: UserRole.PHARMACIST,
-      passwordHash: staffHash,
-      phone: "+92 302 3456789",
-    },
-    {
-      email: "cashier@pharmacy.local",
-      fullName: "Zubair Ahmad (Senior Cashier)",
-      role: UserRole.CASHIER,
-      passwordHash: staffHash,
-      phone: "+92 303 4567890",
-    },
-    {
-      email: "inventory@pharmacy.local",
-      fullName: "Hamza Farooq (Inventory Controller)",
-      role: UserRole.INVENTORY_MANAGER,
-      passwordHash: staffHash,
-      phone: "+92 304 5678901",
-    },
-    {
-      email: "accountant@pharmacy.local",
-      fullName: "Bilal Raza (Lead Accountant)",
-      role: UserRole.ACCOUNTANT,
-      passwordHash: staffHash,
-      phone: "+92 305 6789012",
+      phone: "+92 300 0000000",
     },
   ];
 

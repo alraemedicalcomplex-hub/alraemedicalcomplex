@@ -44,23 +44,18 @@ function LoginForm() {
     }
   };
 
-  const handleQuickLogin = (demoEmail: string, demoPass: string) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-  };
-
   return (
     <div className="w-full max-w-md space-y-6">
       {/* Brand Header */}
       <div className="text-center space-y-2">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 shadow-xl shadow-indigo-500/25">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-emerald-500 shadow-xl shadow-indigo-500/25">
           <Pill className="h-8 w-8 text-white" />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-white">
-          Sufi Pharmacy Management
+          Al Rae Hospital
         </h1>
         <p className="text-xs text-slate-400">
-          DRAP Compliant Dispensary & Clinical Retail System • Pakistan
+          Hospital Pharmacy & Clinical Management System • Pakistan
         </p>
       </div>
 
@@ -75,10 +70,10 @@ function LoginForm() {
           )}
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-slate-300">Staff Email</label>
+            <label className="text-xs font-medium text-slate-300">Staff Username or Email</label>
             <Input
-              type="email"
-              placeholder="name@pharmacy.local"
+              type="text"
+              placeholder="sufiyan or email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               icon={<Mail className="h-4 w-4" />}
@@ -100,56 +95,12 @@ function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 mt-2"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 mt-2 shadow-lg shadow-indigo-600/20"
             isLoading={isLoading}
           >
             Sign In to Terminal <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         </form>
-
-        {/* Quick Demo Credentials for Fast Testing */}
-        <div className="mt-6 pt-6 border-t border-border/80">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center mb-3">
-            Quick Role Switcher (Pre-Configured Staff)
-          </p>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <button
-              type="button"
-              onClick={() => handleQuickLogin("admin@pharmacy.local", "Admin@Pharmacy2026!")}
-              className="rounded-lg border border-border/80 bg-slate-900/60 p-2 text-left hover:border-indigo-500/50 hover:bg-indigo-950/20 transition"
-            >
-              <div className="font-semibold text-indigo-300">Super Admin</div>
-              <div className="text-[10px] text-slate-400 truncate">admin@pharmacy.local</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickLogin("pharmacist@pharmacy.local", "Staff@Pharmacy2026!")}
-              className="rounded-lg border border-border/80 bg-slate-900/60 p-2 text-left hover:border-emerald-500/50 hover:bg-emerald-950/20 transition"
-            >
-              <div className="font-semibold text-emerald-300">Pharmacist</div>
-              <div className="text-[10px] text-slate-400 truncate">pharmacist@pharmacy.local</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickLogin("cashier@pharmacy.local", "Staff@Pharmacy2026!")}
-              className="rounded-lg border border-border/80 bg-slate-900/60 p-2 text-left hover:border-amber-500/50 hover:bg-amber-950/20 transition"
-            >
-              <div className="font-semibold text-amber-300">Cashier (POS)</div>
-              <div className="text-[10px] text-slate-400 truncate">cashier@pharmacy.local</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickLogin("inventory@pharmacy.local", "Staff@Pharmacy2026!")}
-              className="rounded-lg border border-border/80 bg-slate-900/60 p-2 text-left hover:border-violet-500/50 hover:bg-violet-950/20 transition"
-            >
-              <div className="font-semibold text-violet-300">Inventory Mgr</div>
-              <div className="text-[10px] text-slate-400 truncate">inventory@pharmacy.local</div>
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Security Notice */}

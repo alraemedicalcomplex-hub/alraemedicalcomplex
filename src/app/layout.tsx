@@ -14,23 +14,23 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "Sufi Pharmacy Management System | Pakistan",
-    template: "%s | Sufi Pharmacy",
+    default: "Al Rae Hospital Management System | Pakistan",
+    template: "%s | Al Rae Hospital",
   },
   description:
     "Enterprise Pharmacy & Dispensary Management Suite tailored for Pakistan. DRAP compliance, FEFO batch allocation, POS 80mm thermal receipt printing, accounts ledger, and clinical verification.",
-  applicationName: "Sufi Pharmacy ERP",
+  applicationName: "Al Rae Hospital ERP",
   keywords: [
+    "Al Rae Hospital",
     "Pharmacy Management System",
-    "Pakistan Pharmacy Software",
+    "Pakistan Hospital Software",
     "DRAP Compliance",
     "FEFO Inventory",
     "POS Dispensary",
-    "Sufi Pharmacy",
     "PKR Currency Accounting",
   ],
-  authors: [{ name: "Sufi Pharmacy & Wellness" }],
-  creator: "Sufi Pharmacy Architect",
+  authors: [{ name: "Al Rae Hospital" }],
+  creator: "Al Rae Hospital Architect",
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
