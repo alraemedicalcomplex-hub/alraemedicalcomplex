@@ -119,12 +119,21 @@ export default function SalesHistoryPage() {
           </p>
         </div>
 
-        <Link href="/pos">
-          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white gap-1.5 text-xs shadow-md shadow-emerald-600/20">
-            <Plus className="h-4 w-4" />
-            <span>New POS Sale (F2)</span>
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <Link href="/returns">
+            <Button variant="outline" size="sm" className="gap-1.5 text-xs">
+              <Undo2 className="h-4 w-4 text-amber-500" />
+              <span>Sales Returns</span>
+            </Button>
+          </Link>
+
+          <Link href="/pos">
+            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white gap-1.5 text-xs shadow-md shadow-emerald-600/20">
+              <Plus className="h-4 w-4" />
+              <span>New POS Sale (F2)</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Filter toolbar */}

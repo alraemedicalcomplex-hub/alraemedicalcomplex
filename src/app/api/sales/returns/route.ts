@@ -100,3 +100,59 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: err.message }, { status: 400 });
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { searchParams } = new URL(req.url);
+    const q = searchParams.get("q") || "";
+
+    const returns = await prisma.saleReturn.findMany({
+      where: {
+        sale: {
+          pharmacyId: user.pharmacyId,
+        },
+        ...(q
+          ? {
+              OR: [
+                { returnNo: { contains: q, mode: "insensitive" } },
+                { reason: { contains: q, mode: "insensitive" } },
+                {
+                  sale: {
+                    OR: [
+                      { invoiceNumber: { contains: q, mode: "insensitive" } },
+                      { customer: { name: { contains: q, mode: "insensitive" } } },
+                    ],
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
+      include: {
+        sale: {
+          include: {
+            customer: true,
+            cashier: { select: { fullName: true } },
+          },
+        },
+        items: {
+          include: {
+            saleItem: {
+              include: {
+                medicine: { select: { name: true, strength: true, dosageForm: true } },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({ returns });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}

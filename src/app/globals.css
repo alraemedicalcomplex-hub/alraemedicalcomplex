@@ -76,6 +76,64 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* Micro-interactions for buttons and clickable elements */
+  button {
+    transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  button:active {
+    transform: scale(0.98);
+  }
+
+  /* Smooth table row transitions */
+  table tbody tr {
+    transition: background-color 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Page and component smooth entrance animations */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Pulsing radar dots for live indicators */
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.pulse-indicator {
+  animation: pulseRing 2s infinite cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+/* Card hover glow accent */
+.card-hover-glow {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.card-hover-glow:hover {
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.08);
 }
 
 /* Custom scrollbars for high-density tables */

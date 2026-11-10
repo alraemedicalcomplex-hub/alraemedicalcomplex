@@ -332,12 +332,13 @@ export default function MedicinesPage() {
                       className="hover:bg-muted/30 transition-colors"
                     >
                       <td className="py-3.5 px-4">
-                        <div className="font-semibold text-foreground text-sm flex items-center gap-2">
-                          <span>{med.name}</span>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-semibold text-foreground text-sm">{med.name}</span>
                           {med.prescriptionRequired && (
-                            <Badge variant="destructive" className="text-[9px] py-0 px-1">
-                              Rx (Sched D)
-                            </Badge>
+                            <span className="inline-flex shrink-0 items-center gap-1 rounded bg-rose-500/15 border border-rose-500/30 px-2 py-0.5 text-[10px] font-semibold text-rose-300 shadow-sm leading-none whitespace-nowrap">
+                              <span className="font-extrabold text-rose-200">Rx</span>
+                              <span className="font-mono text-[9px] text-rose-400">Sched D</span>
+                            </span>
                           )}
                         </div>
                         <p className="text-muted-foreground text-[11px] mt-0.5">

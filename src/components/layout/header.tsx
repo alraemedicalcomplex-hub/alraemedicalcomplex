@@ -70,8 +70,12 @@ export function Header({ user, onMobileToggle }: HeaderProps) {
         </button>
 
         <div className="hidden sm:flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-1.5 border border-border/60 text-xs font-mono text-muted-foreground">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+          </span>
           <Clock className="h-3.5 w-3.5 text-indigo-400" />
-          <span>PKT (Asia/Karachi):</span>
+          <span>PKT:</span>
           <span className="font-semibold text-foreground">{currentTime || "--:--:--"}</span>
         </div>
       </div>
