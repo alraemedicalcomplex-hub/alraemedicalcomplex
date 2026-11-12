@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface SaleRecord {
@@ -280,136 +281,112 @@ export default function SalesHistoryPage() {
       </Card>
 
       {/* Sale Detail & Receipt Modal */}
-      {selectedSale && !showReturnModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-border">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">
-                    Invoice {selectedSale.invoiceNumber}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">{formatDate(selectedSale.createdAt, true)}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedSale(null)}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              {/* Items */}
-              <div className="space-y-2">
-                {selectedSale.items.map((it: any) => (
-                  <div key={it.id} className="flex justify-between p-2 rounded-lg bg-muted/20 border border-border/60 text-xs">
-                    <div>
-                      <p className="font-semibold text-foreground">{it.medicine?.name}</p>
-                      <p className="text-[10px] text-muted-foreground">
-                        {it.quantity} × {formatCurrency(it.unitPrice)}
-                      </p>
-                    </div>
-                    <span className="font-mono font-bold text-foreground">{formatCurrency(it.totalPrice)}</span>
+      <Modal
+        isOpen={Boolean(selectedSale && !showReturnModal)}
+        onClose={() => setSelectedSale(null)}
+        title={selectedSale ? `Invoice ${selectedSale.invoiceNumber}` : ""}
+        description={selectedSale ? formatDate(selectedSale.createdAt, true) : ""}
+        maxWidth="max-w-lg"
+      >
+        {selectedSale && (
+          <div className="space-y-4">
+            {/* Items */}
+            <div className="space-y-2">
+              {selectedSale.items.map((it: any) => (
+                <div key={it.id} className="flex justify-between p-2 rounded-lg bg-muted/20 border border-border/60 text-xs">
+                  <div>
+                    <p className="font-semibold text-foreground">{it.medicine?.name}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      {it.quantity} × {formatCurrency(it.unitPrice)}
+                    </p>
                   </div>
-                ))}
-              </div>
-
-              <div className="pt-3 border-t border-border space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Subtotal:</span>
-                  <span className="font-mono">{formatCurrency(selectedSale.subtotal)}</span>
+                  <span className="font-mono font-bold text-foreground">{formatCurrency(it.totalPrice)}</span>
                 </div>
-                {Number(selectedSale.discountAmount) > 0 && (
-                  <div className="flex justify-between text-red-400">
-                    <span>Discount:</span>
-                    <span className="font-mono">-{formatCurrency(selectedSale.discountAmount)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between text-sm font-bold pt-1 border-t border-border">
-                  <span>Total Amount:</span>
-                  <span className="font-mono text-emerald-400">{formatCurrency(selectedSale.totalAmount)}</span>
-                </div>
-              </div>
+              ))}
+            </div>
 
-              <div className="flex justify-end pt-2">
-                <Button size="sm" onClick={() => window.print()} className="gap-1.5 bg-indigo-600 text-white">
-                  <Printer className="h-4 w-4" /> Print Receipt
-                </Button>
+            <div className="pt-3 border-t border-border space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Subtotal:</span>
+                <span className="font-mono">{formatCurrency(selectedSale.subtotal)}</span>
+              </div>
+              {Number(selectedSale.discountAmount) > 0 && (
+                <div className="flex justify-between text-red-400">
+                  <span>Discount:</span>
+                  <span className="font-mono">-{formatCurrency(selectedSale.discountAmount)}</span>
+                </div>
+              )}
+              <div className="flex justify-between text-sm font-bold pt-1 border-t border-border">
+                <span>Total Amount:</span>
+                <span className="font-mono text-emerald-400">{formatCurrency(selectedSale.totalAmount)}</span>
               </div>
             </div>
+
+            <div className="flex justify-end pt-2">
+              <Button size="sm" onClick={() => window.print()} className="gap-1.5 bg-indigo-600 text-white">
+                <Printer className="h-4 w-4" /> Print Receipt
+              </Button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
 
       {/* Return Modal */}
-      {selectedSale && showReturnModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-md rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
-              <div className="flex items-start justify-between pb-3 border-b border-border/80">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">
-                    Process Sales Return: {selectedSale.invoiceNumber}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Refund: <span className="font-bold text-foreground font-mono">{formatCurrency(selectedSale.totalAmount)}</span>
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowReturnModal(false)}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              <form onSubmit={handleReturnSubmit} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Return Reason *</label>
-                  <select
-                    value={returnReason}
-                    onChange={(e) => setReturnReason(e.target.value)}
-                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <option value="Customer Change of Mind / Unopened">Customer Change of Mind / Unopened</option>
-                    <option value="Prescription Changed by Physician">Prescription Changed by Physician</option>
-                    <option value="Defective / Damaged Package">Defective / Damaged Package</option>
-                    <option value="Short Expiry Reported by Customer">Short Expiry Reported by Customer</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Stock Disposition *</label>
-                  <select
-                    value={returnDisposition}
-                    onChange={(e) => setReturnDisposition(e.target.value)}
-                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <option value="RESTOCK">Restock into Sellable Inventory (Inspected & Good)</option>
-                    <option value="DISCARD">Discard / Isolate (Unsellable, broken, or contaminated)</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-                  <Button variant="outline" size="sm" onClick={() => setShowReturnModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    size="sm"
-                    className="bg-amber-600 hover:bg-amber-500 text-white"
-                    isLoading={isProcessingReturn}
-                  >
-                    Authorize & Process Refund
-                  </Button>
-                </div>
-              </form>
-            </div>
+      <Modal
+        isOpen={Boolean(selectedSale && showReturnModal)}
+        onClose={() => setShowReturnModal(false)}
+        title={selectedSale ? `Process Sales Return: ${selectedSale.invoiceNumber}` : ""}
+        description={
+          selectedSale ? (
+            <>
+              Refund: <span className="font-bold text-foreground font-mono">{formatCurrency(selectedSale.totalAmount)}</span>
+            </>
+          ) : ""
+        }
+        maxWidth="max-w-md"
+      >
+        <form onSubmit={handleReturnSubmit} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-300">Return Reason *</label>
+            <select
+              value={returnReason}
+              onChange={(e) => setReturnReason(e.target.value)}
+              className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <option value="Customer Change of Mind / Unopened">Customer Change of Mind / Unopened</option>
+              <option value="Prescription Changed by Physician">Prescription Changed by Physician</option>
+              <option value="Defective / Damaged Package">Defective / Damaged Package</option>
+              <option value="Short Expiry Reported by Customer">Short Expiry Reported by Customer</option>
+            </select>
           </div>
-        </div>
-      )}
+
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-300">Stock Disposition *</label>
+            <select
+              value={returnDisposition}
+              onChange={(e) => setReturnDisposition(e.target.value)}
+              className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <option value="RESTOCK">Restock into Sellable Inventory (Inspected & Good)</option>
+              <option value="DISCARD">Discard / Isolate (Unsellable, broken, or contaminated)</option>
+            </select>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+            <Button variant="outline" size="sm" onClick={() => setShowReturnModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              className="bg-amber-600 hover:bg-amber-500 text-white"
+              isLoading={isProcessingReturn}
+            >
+              Authorize & Process Refund
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

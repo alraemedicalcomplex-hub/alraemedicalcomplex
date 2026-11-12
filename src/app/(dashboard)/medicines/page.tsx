@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface MedicineItem {
@@ -424,27 +425,13 @@ export default function MedicinesPage() {
       </Card>
 
       {/* Modal: Add New Medicine */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-2xl rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl">
-              <div className="flex items-start justify-between pb-4 mb-6 border-b border-border/80">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">
-                    Add New Medicine Master Record
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Enter pharmaceutical details, generic formula, and DRAP classification
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+      <Modal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add New Medicine Master Record"
+        description="Enter pharmaceutical details, generic formula, and DRAP classification"
+        maxWidth="max-w-2xl"
+      >
 
             {formError && (
               <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-400">
@@ -615,65 +602,46 @@ export default function MedicinesPage() {
                 </Button>
               </div>
             </form>
-          </div>
-        </div>
-      </div>
-      )}
+          </Modal>
 
       {/* Modal: Bulk CSV Import */}
-      {showImportModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-xl rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
-              <div className="flex items-start justify-between pb-4 border-b border-border/80">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">Bulk CSV Medicine Import</h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Paste standard CSV rows with columns: <code>name,genericName,category,manufacturer,strength,dosageForm,barcode</code>
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowImportModal(false)}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              {importStatus && (
-                <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/30 p-3 text-xs text-indigo-300">
-                  {importStatus}
-                </div>
-              )}
-
-              <form onSubmit={handleCSVImport} className="space-y-4">
-                <textarea
-                  rows={8}
-                  value={csvText}
-                  onChange={(e) => setCsvText(e.target.value)}
-                  placeholder={`name,genericName,category,manufacturer,strength,dosageForm,barcode\nDisprin 300mg,Aspirin,Analgesics,Reckitt Benckiser,300mg,TABLET,8964000998811\nFlagyl 400mg,Metronidazole,Antibiotics,Sanofi Pakistan,400mg,TABLET,8964000441122`}
-                  className="w-full font-mono text-xs p-3 rounded-lg border border-input bg-card text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  required
-                />
-
-                <div className="flex items-center justify-end gap-3 pt-2 border-t border-border/50">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setShowImportModal(false)}
-                  >
-                    Close
-                  </Button>
-                  <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white">
-                    Execute Import
-                  </Button>
-                </div>
-              </form>
-            </div>
+      <Modal
+        isOpen={showImportModal}
+        onClose={() => setShowImportModal(false)}
+        title="Bulk CSV Medicine Import"
+        description={<>Paste standard CSV rows with columns: <code>name,genericName,category,manufacturer,strength,dosageForm,barcode</code></>}
+        maxWidth="max-w-xl"
+      >
+        {importStatus && (
+          <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/30 p-3 text-xs text-indigo-300 mb-4">
+            {importStatus}
           </div>
-        </div>
-      )}
+        )}
+
+        <form onSubmit={handleCSVImport} className="space-y-4">
+          <textarea
+            rows={8}
+            value={csvText}
+            onChange={(e) => setCsvText(e.target.value)}
+            placeholder={`name,genericName,category,manufacturer,strength,dosageForm,barcode\nDisprin 300mg,Aspirin,Analgesics,Reckitt Benckiser,300mg,TABLET,8964000998811\nFlagyl 400mg,Metronidazole,Antibiotics,Sanofi Pakistan,400mg,TABLET,8964000441122`}
+            className="w-full font-mono text-xs p-3 rounded-lg border border-input bg-card text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            required
+          />
+
+          <div className="flex items-center justify-end gap-3 pt-2 border-t border-border/50">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowImportModal(false)}
+            >
+              Close
+            </Button>
+            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white">
+              Execute Import
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

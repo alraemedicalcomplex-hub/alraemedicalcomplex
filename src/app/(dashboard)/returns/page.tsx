@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface ReturnItem {
@@ -402,172 +403,162 @@ export default function SalesReturnsPage() {
       </Card>
 
       {/* Modal: Process Sales Return */}
-      {showNewReturnModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
-              <div className="flex items-start justify-between pb-3 border-b border-border/80">
-                <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
-                  <Undo2 className="h-5 w-5 text-amber-500" />
-                  Process Sales Return & Refund
-                </h3>
+      <Modal
+        isOpen={showNewReturnModal}
+        onClose={() => {
+          setShowNewReturnModal(false);
+          setLookupSale(null);
+          setInvoiceLookup("");
+          setLookupError("");
+        }}
+        title={
+          <span className="flex items-center gap-2">
+            <Undo2 className="h-5 w-5 text-amber-500" />
+            Process Sales Return & Refund
+          </span>
+        }
+        maxWidth="max-w-lg"
+      >
+        {lookupError && (
+          <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400 mb-4">
+            {lookupError}
+          </div>
+        )}
+
+        {/* Step 1: Lookup Invoice */}
+        {!lookupSale ? (
+          <form onSubmit={handleLookupInvoice} className="space-y-4">
+            <p className="text-xs text-muted-foreground">
+              Enter the original customer invoice number printed on the receipt to locate sale items.
+            </p>
+
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Invoice Number *</label>
+              <Input
+                placeholder="e.g. INV-2026-00001"
+                value={invoiceLookup}
+                onChange={(e) => setInvoiceLookup(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setShowNewReturnModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                className="bg-amber-600 hover:bg-amber-500 text-white"
+                isLoading={isLookingUp}
+              >
+                Find Invoice
+              </Button>
+            </div>
+          </form>
+        ) : (
+          /* Step 2: Confirm Items & Disposition */
+          <div className="space-y-4">
+            <div className="p-3 rounded-xl bg-muted/30 border border-border/80 space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Invoice:</span>
+                <span className="font-mono font-bold text-indigo-400">{lookupSale.invoiceNumber}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Patient:</span>
+                <span className="font-semibold text-foreground">
+                  {lookupSale.customer?.name || "Walk-in Patient"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Original Total:</span>
+                <span className="font-mono font-bold text-foreground">
+                  {formatCurrency(lookupSale.totalAmount)}
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Physical Stock Disposition *</label>
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setShowNewReturnModal(false);
-                    setLookupSale(null);
-                    setInvoiceLookup("");
-                    setLookupError("");
-                  }}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
+                  onClick={() => setSelectedDisposition("RESTOCK")}
+                  className={`p-2.5 rounded-lg border text-left text-xs transition ${
+                    selectedDisposition === "RESTOCK"
+                      ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 font-semibold"
+                      : "border-border text-muted-foreground hover:bg-muted"
+                  }`}
                 >
-                  <X className="h-4 w-4" />
+                  <Boxes className="h-4 w-4 mb-1 text-emerald-400" />
+                  <div>Restock to Shelves</div>
+                  <span className="text-[10px] font-normal opacity-80">Unopened & unexpired</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedDisposition("DISCARD")}
+                  className={`p-2.5 rounded-lg border text-left text-xs transition ${
+                    selectedDisposition === "DISCARD"
+                      ? "border-red-500 bg-red-500/10 text-red-400 font-semibold"
+                      : "border-border text-muted-foreground hover:bg-muted"
+                  }`}
+                >
+                  <Trash2 className="h-4 w-4 mb-1 text-red-400" />
+                  <div>Discard / Damaged</div>
+                  <span className="text-[10px] font-normal opacity-80">Seal broken or unusable</span>
                 </button>
               </div>
+            </div>
 
-              {lookupError && (
-                <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
-                  {lookupError}
-                </div>
-              )}
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Reason for Return *</label>
+              <Input
+                placeholder="e.g. Wrong dosage dispensed, customer change of mind..."
+                value={returnReason}
+                onChange={(e) => setReturnReason(e.target.value)}
+                required
+              />
+            </div>
 
-              {/* Step 1: Lookup Invoice */}
-              {!lookupSale ? (
-                <form onSubmit={handleLookupInvoice} className="space-y-4">
-                  <p className="text-xs text-muted-foreground">
-                    Enter the original customer invoice number printed on the receipt to locate sale items.
-                  </p>
+            <div className="flex items-center justify-between pt-3 border-t border-border">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setLookupSale(null)}
+              >
+                Change Invoice
+              </Button>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Invoice Number *</label>
-                    <Input
-                      placeholder="e.g. INV-2026-00001"
-                      value={invoiceLookup}
-                      onChange={(e) => setInvoiceLookup(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowNewReturnModal(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      size="sm"
-                      className="bg-amber-600 hover:bg-amber-500 text-white"
-                      isLoading={isLookingUp}
-                    >
-                      Find Invoice
-                    </Button>
-                  </div>
-                </form>
-              ) : (
-                /* Step 2: Confirm Items & Disposition */
-                <div className="space-y-4">
-                  <div className="p-3 rounded-xl bg-muted/30 border border-border/80 space-y-1 text-xs">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Invoice:</span>
-                      <span className="font-mono font-bold text-indigo-400">{lookupSale.invoiceNumber}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Patient:</span>
-                      <span className="font-semibold text-foreground">
-                        {lookupSale.customer?.name || "Walk-in Patient"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Original Total:</span>
-                      <span className="font-mono font-bold text-foreground">
-                        {formatCurrency(lookupSale.totalAmount)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Physical Stock Disposition *</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedDisposition("RESTOCK")}
-                        className={`p-2.5 rounded-lg border text-left text-xs transition ${
-                          selectedDisposition === "RESTOCK"
-                            ? "border-emerald-500 bg-emerald-500/10 text-emerald-400 font-semibold"
-                            : "border-border text-muted-foreground hover:bg-muted"
-                        }`}
-                      >
-                        <Boxes className="h-4 w-4 mb-1 text-emerald-400" />
-                        <div>Restock to Shelves</div>
-                        <span className="text-[10px] font-normal opacity-80">Unopened & unexpired</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() => setSelectedDisposition("DISCARD")}
-                        className={`p-2.5 rounded-lg border text-left text-xs transition ${
-                          selectedDisposition === "DISCARD"
-                            ? "border-red-500 bg-red-500/10 text-red-400 font-semibold"
-                            : "border-border text-muted-foreground hover:bg-muted"
-                        }`}
-                      >
-                        <Trash2 className="h-4 w-4 mb-1 text-red-400" />
-                        <div>Discard / Damaged</div>
-                        <span className="text-[10px] font-normal opacity-80">Seal broken or unusable</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Reason for Return *</label>
-                    <Input
-                      placeholder="e.g. Wrong dosage dispensed, customer change of mind..."
-                      value={returnReason}
-                      onChange={(e) => setReturnReason(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-border">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setLookupSale(null)}
-                    >
-                      Change Invoice
-                    </Button>
-
-                    <div className="flex items-center gap-2">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setShowNewReturnModal(false)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={handleProcessReturn}
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white"
-                        isLoading={isSubmitting}
-                      >
-                        Confirm Return & Refund ({formatCurrency(lookupSale.totalAmount)})
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowNewReturnModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleProcessReturn}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white"
+                  isLoading={isSubmitting}
+                >
+                  Confirm Return & Refund ({formatCurrency(lookupSale.totalAmount)})
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </Modal>
     </div>
   );
 }

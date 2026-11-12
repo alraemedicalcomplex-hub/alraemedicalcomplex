@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
 import { formatDate } from "@/lib/utils";
 
 interface PrescriptionRecord {
@@ -408,133 +409,119 @@ export default function PrescriptionsPage() {
       </Card>
 
       {/* Modal: Add New Prescription */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-xl rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
-              <div className="flex items-start justify-between pb-3 border-b border-border/80">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">Record Patient Prescription</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Enter patient, doctor, and prescribed items</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+      <Modal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Record Patient Prescription"
+        description="Enter patient, doctor, and prescribed items"
+        maxWidth="max-w-xl"
+      >
+        {formError && (
+          <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400 mb-4">
+            {formError}
+          </div>
+        )}
 
-              {formError && (
-                <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
-                  {formError}
-                </div>
-              )}
-
-              <form onSubmit={handleCreatePrescription} className="space-y-3">
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="col-span-2 space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Patient Full Name *</label>
-                    <Input placeholder="e.g. Asma Begum" value={patientName} onChange={(e) => setPatientName(e.target.value)} required />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Age</label>
-                    <Input type="number" placeholder="42" value={patientAge} onChange={(e) => setPatientAge(e.target.value)} />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Physician Name *</label>
-                    <Input placeholder="Dr. Muhammad Tariq" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} required />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">PMDC Registration #</label>
-                    <Input placeholder="48192-P" value={pmdcNumber} onChange={(e) => setPmdcNumber(e.target.value)} />
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Hospital / Medical Center</label>
-                  <Input placeholder="e.g. Shalamar Hospital, Lahore" value={clinicHospital} onChange={(e) => setClinicHospital(e.target.value)} />
-                </div>
-
-                {/* Medicine items */}
-                <div className="space-y-2 pt-2 border-t border-border">
-                  <label className="text-xs font-medium text-slate-300 block">Prescribed Medicines</label>
-                  {items.map((it, idx) => (
-                    <div key={idx} className="p-3 rounded-lg border border-border bg-card/60 space-y-2">
-                      <div className="grid grid-cols-2 gap-2">
-                        <Input
-                          placeholder="Medicine name (e.g. Augmentin 625mg)"
-                          value={it.medicineName}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, medicineName: val } : item)));
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                        <Input
-                          placeholder="Dosage (e.g. 1 Tablet)"
-                          value={it.dosage}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, dosage: val } : item)));
-                          }}
-                          className="h-8 text-xs"
-                        />
-                      </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        <Input
-                          placeholder="Frequency (TDS / BD)"
-                          value={it.frequency}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, frequency: val } : item)));
-                          }}
-                          className="h-8 text-xs"
-                        />
-                        <Input
-                          type="number"
-                          placeholder="Days (e.g. 7)"
-                          value={it.durationDays}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, durationDays: val } : item)));
-                          }}
-                          className="h-8 text-xs"
-                        />
-                        <Input
-                          type="number"
-                          placeholder="Qty (21)"
-                          value={it.quantityPrescribed}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, quantityPrescribed: val } : item)));
-                          }}
-                          className="h-8 text-xs"
-                          required
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
-                  <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isSubmitting}>
-                    Save Prescription
-                  </Button>
-                </div>
-              </form>
+        <form onSubmit={handleCreatePrescription} className="space-y-3">
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-2 space-y-1">
+              <label className="text-xs font-medium text-slate-300">Patient Full Name *</label>
+              <Input placeholder="e.g. Asma Begum" value={patientName} onChange={(e) => setPatientName(e.target.value)} required />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Age</label>
+              <Input type="number" placeholder="42" value={patientAge} onChange={(e) => setPatientAge(e.target.value)} />
             </div>
           </div>
-        </div>
-      )}
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Physician Name *</label>
+              <Input placeholder="Dr. Muhammad Tariq" value={doctorName} onChange={(e) => setDoctorName(e.target.value)} required />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">PMDC Registration #</label>
+              <Input placeholder="48192-P" value={pmdcNumber} onChange={(e) => setPmdcNumber(e.target.value)} />
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-300">Hospital / Medical Center</label>
+            <Input placeholder="e.g. Shalamar Hospital, Lahore" value={clinicHospital} onChange={(e) => setClinicHospital(e.target.value)} />
+          </div>
+
+          {/* Medicine items */}
+          <div className="space-y-2 pt-2 border-t border-border">
+            <label className="text-xs font-medium text-slate-300 block">Prescribed Medicines</label>
+            {items.map((it, idx) => (
+              <div key={idx} className="p-3 rounded-lg border border-border bg-card/60 space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Input
+                    placeholder="Medicine name (e.g. Augmentin 625mg)"
+                    value={it.medicineName}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, medicineName: val } : item)));
+                    }}
+                    className="h-8 text-xs"
+                    required
+                  />
+                  <Input
+                    placeholder="Dosage (e.g. 1 Tablet)"
+                    value={it.dosage}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, dosage: val } : item)));
+                    }}
+                    className="h-8 text-xs"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <Input
+                    placeholder="Frequency (TDS / BD)"
+                    value={it.frequency}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, frequency: val } : item)));
+                    }}
+                    className="h-8 text-xs"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Days (e.g. 7)"
+                    value={it.durationDays}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, durationDays: val } : item)));
+                    }}
+                    className="h-8 text-xs"
+                  />
+                  <Input
+                    type="number"
+                    placeholder="Qty (21)"
+                    value={it.quantityPrescribed}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setItems((prev) => prev.map((item, i) => (i === idx ? { ...item, quantityPrescribed: val } : item)));
+                    }}
+                    className="h-8 text-xs"
+                    required
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+            <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isSubmitting}>
+              Save Prescription
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

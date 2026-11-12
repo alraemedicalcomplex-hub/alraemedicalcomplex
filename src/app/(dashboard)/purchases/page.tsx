@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface PurchaseRecord {
@@ -280,221 +281,205 @@ export default function PurchasesPage() {
       </Card>
 
       {/* Modal: Create Purchase Order */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-3xl rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
-              <div className="flex items-start justify-between pb-3 border-b border-border/80">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">Create Purchase Order</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Select supplier and input medicine batches to procure
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+      <Modal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Create Purchase Order"
+        description="Select supplier and input medicine batches to procure"
+        maxWidth="max-w-3xl"
+      >
+        {formError && (
+          <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400 mb-4">
+            {formError}
+          </div>
+        )}
 
-              {formError && (
-                <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
-                  {formError}
-                </div>
-              )}
+        <form onSubmit={handleCreatePO} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Supplier *</label>
+              <select
+                value={selectedSupplierId}
+                onChange={(e) => setSelectedSupplierId(e.target.value)}
+                className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                required
+              >
+                {suppliers.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} (Bal: Rs.{Number(s.balance).toFixed(0)})
+                  </option>
+                ))}
+              </select>
+            </div>
 
-              <form onSubmit={handleCreatePO} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Supplier *</label>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Supplier Billed Invoice #</label>
+              <Input
+                placeholder="e.g. INV-SUP-891"
+                value={supplierInvoiceNo}
+                onChange={(e) => setSupplierInvoiceNo(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Items Table */}
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-slate-300 block">Ordered Medicines</label>
+            {items.map((it, idx) => (
+              <div key={idx} className="p-3 rounded-lg border border-border bg-card/60 space-y-3">
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Medicine *</label>
                     <select
-                      value={selectedSupplierId}
-                      onChange={(e) => setSelectedSupplierId(e.target.value)}
-                      className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      value={it.medicineId}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, medicineId: val } : item))
+                        );
+                      }}
+                      className="flex h-8 w-full rounded border border-input bg-card px-2 text-xs text-foreground"
                       required
                     >
-                      {suppliers.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.name} (Bal: Rs.{Number(s.balance).toFixed(0)})
+                      {medicines.map((m) => (
+                        <option key={m.id} value={m.id}>
+                          {m.name}
                         </option>
                       ))}
                     </select>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Supplier Billed Invoice #</label>
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Batch / Lot # *</label>
                     <Input
-                      placeholder="e.g. INV-SUP-891"
-                      value={supplierInvoiceNo}
-                      onChange={(e) => setSupplierInvoiceNo(e.target.value)}
+                      value={it.batchNumber}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, batchNumber: val } : item))
+                        );
+                      }}
+                      className="h-8 text-xs font-mono"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Expiry Date *</label>
+                    <Input
+                      type="date"
+                      value={it.expiryDate}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, expiryDate: val } : item))
+                        );
+                      }}
+                      className="h-8 text-xs"
+                      required
                     />
                   </div>
                 </div>
 
-                {/* Items Table */}
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-slate-300 block">Ordered Medicines</label>
-                  {items.map((it, idx) => (
-                    <div key={idx} className="p-3 rounded-lg border border-border bg-card/60 space-y-3">
-                      <div className="grid grid-cols-3 gap-3">
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Medicine *</label>
-                          <select
-                            value={it.medicineId}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, medicineId: val } : item))
-                              );
-                            }}
-                            className="flex h-8 w-full rounded border border-input bg-card px-2 text-xs text-foreground"
-                            required
-                          >
-                            {medicines.map((m) => (
-                              <option key={m.id} value={m.id}>
-                                {m.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                <div className="grid grid-cols-5 gap-2">
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Quantity</label>
+                    <Input
+                      type="number"
+                      value={it.quantity}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, quantity: val } : item))
+                        );
+                      }}
+                      className="h-8 text-xs font-mono"
+                      required
+                    />
+                  </div>
 
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Batch / Lot # *</label>
-                          <Input
-                            value={it.batchNumber}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, batchNumber: val } : item))
-                              );
-                            }}
-                            className="h-8 text-xs font-mono"
-                            required
-                          />
-                        </div>
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Bonus Free Qty</label>
+                    <Input
+                      type="number"
+                      value={it.bonusQuantity}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, bonusQuantity: val } : item))
+                        );
+                      }}
+                      className="h-8 text-xs font-mono"
+                    />
+                  </div>
 
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Expiry Date *</label>
-                          <Input
-                            type="date"
-                            value={it.expiryDate}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, expiryDate: val } : item))
-                              );
-                            }}
-                            className="h-8 text-xs"
-                            required
-                          />
-                        </div>
-                      </div>
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Purchase Cost (PKR)</label>
+                    <Input
+                      type="number"
+                      value={it.unitCost}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, unitCost: val } : item))
+                        );
+                      }}
+                      className="h-8 text-xs font-mono"
+                      required
+                    />
+                  </div>
 
-                      <div className="grid grid-cols-5 gap-2">
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Quantity</label>
-                          <Input
-                            type="number"
-                            value={it.quantity}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, quantity: val } : item))
-                              );
-                            }}
-                            className="h-8 text-xs font-mono"
-                            required
-                          />
-                        </div>
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Trade Price (PKR)</label>
+                    <Input
+                      type="number"
+                      value={it.tradePrice}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, tradePrice: val } : item))
+                        );
+                      }}
+                      className="h-8 text-xs font-mono"
+                      required
+                    />
+                  </div>
 
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Bonus Free Qty</label>
-                          <Input
-                            type="number"
-                            value={it.bonusQuantity}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, bonusQuantity: val } : item))
-                              );
-                            }}
-                            className="h-8 text-xs font-mono"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Purchase Cost (PKR)</label>
-                          <Input
-                            type="number"
-                            value={it.unitCost}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, unitCost: val } : item))
-                              );
-                            }}
-                            className="h-8 text-xs font-mono"
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Trade Price (PKR)</label>
-                          <Input
-                            type="number"
-                            value={it.tradePrice}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, tradePrice: val } : item))
-                              );
-                            }}
-                            className="h-8 text-xs font-mono"
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[10px] text-muted-foreground block mb-0.5">Retail MRP (PKR)</label>
-                          <Input
-                            type="number"
-                            value={it.retailPrice}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              setItems((prev) =>
-                                prev.map((item, i) => (i === idx ? { ...item, retailPrice: val } : item))
-                              );
-                            }}
-                            className="h-8 text-xs font-mono"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  <div>
+                    <label className="text-[10px] text-muted-foreground block mb-0.5">Retail MRP (PKR)</label>
+                    <Input
+                      type="number"
+                      value={it.retailPrice}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setItems((prev) =>
+                          prev.map((item, i) => (i === idx ? { ...item, retailPrice: val } : item))
+                        );
+                      }}
+                      className="h-8 text-xs font-mono"
+                      required
+                    />
+                  </div>
                 </div>
-
-                <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-                  <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    type="submit"
-                    size="sm"
-                    className="bg-indigo-600 hover:bg-indigo-500 text-white"
-                    isLoading={isSubmitting}
-                  >
-                    Generate Purchase Order
-                  </Button>
-                </div>
-              </form>
-            </div>
+              </div>
+            ))}
           </div>
-        </div>
-      )}
+
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+            <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              size="sm"
+              className="bg-indigo-600 hover:bg-indigo-500 text-white"
+              isLoading={isSubmitting}
+            >
+              Generate Purchase Order
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

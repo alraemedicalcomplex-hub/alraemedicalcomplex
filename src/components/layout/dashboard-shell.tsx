@@ -52,7 +52,7 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
       <div className="flex flex-1 flex-col overflow-hidden min-w-0">
         <Header user={user} onMobileToggle={() => setMobileOpen(!mobileOpen)} />
         <main className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-6 lg:p-8">
-          <div className="mx-auto w-full max-w-[1600px] space-y-5 sm:space-y-6 animate-page-enter">
+          <div className="mx-auto w-full max-w-[1600px] space-y-5 sm:space-y-6">
             {children}
           </div>
         </main>

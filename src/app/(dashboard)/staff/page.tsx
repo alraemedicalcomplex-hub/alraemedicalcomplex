@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Modal } from "@/components/ui/modal";
 import { formatDate } from "@/lib/utils";
 
 interface StaffMember {
@@ -363,82 +364,68 @@ export default function StaffPage() {
       </Card>
 
       {/* Modal: Add Staff */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
-          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
-            <div className="w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
-              <div className="flex items-start justify-between pb-3 border-b border-border/80">
-                <div>
-                  <h3 className="text-xl font-bold text-foreground">Add New Staff Member</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">Configure role & access credentials</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
+      <Modal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Add New Staff Member"
+        description="Configure role & access credentials"
+        maxWidth="max-w-lg"
+      >
+        {errorMsg && (
+          <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400 mb-4">
+            {errorMsg}
+          </div>
+        )}
 
-              {errorMsg && (
-                <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
-                  {errorMsg}
-                </div>
-              )}
+        <form onSubmit={handleCreateStaff} className="space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-300">Full Name *</label>
+            <Input placeholder="e.g. Dr. Ayesha Siddiqa" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
+          </div>
 
-              <form onSubmit={handleCreateStaff} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Full Name *</label>
-                  <Input placeholder="e.g. Dr. Ayesha Siddiqa" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-                </div>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-300">Email Address *</label>
+            <Input type="email" placeholder="ayesha@pharmacy.local" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Email Address *</label>
-                  <Input type="email" placeholder="ayesha@pharmacy.local" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                </div>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-slate-300">Temporary Password *</label>
+            <Input type="password" placeholder="••••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          </div>
 
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Temporary Password *</label>
-                  <Input type="password" placeholder="••••••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
-                </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Contact Phone</label>
+              <Input placeholder="0300..." value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Contact Phone</label>
-                    <Input placeholder="0300..." value={phone} onChange={(e) => setPhone(e.target.value)} />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium text-slate-300">Staff Role *</label>
-                    <select
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    >
-                      <option value="PHARMACIST">Pharmacist (Pharm.D)</option>
-                      <option value="CASHIER">Cashier (POS)</option>
-                      <option value="INVENTORY_MANAGER">Inventory Manager</option>
-                      <option value="ACCOUNTANT">Accountant</option>
-                      <option value="MANAGER">Pharmacy Manager</option>
-                      <option value="ADMIN">System Administrator</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-                  <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
-                    Cancel
-                  </Button>
-                  <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isSubmitting}>
-                    Save Staff Account
-                  </Button>
-                </div>
-              </form>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-300">Staff Role *</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <option value="PHARMACIST">Pharmacist (Pharm.D)</option>
+                <option value="CASHIER">Cashier (POS)</option>
+                <option value="INVENTORY_MANAGER">Inventory Manager</option>
+                <option value="ACCOUNTANT">Accountant</option>
+                <option value="MANAGER">Pharmacy Manager</option>
+                <option value="ADMIN">System Administrator</option>
+              </select>
             </div>
           </div>
-        </div>
-      )}
+
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+            <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
+              Cancel
+            </Button>
+            <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isSubmitting}>
+              Save Staff Account
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
