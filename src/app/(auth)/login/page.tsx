@@ -37,8 +37,7 @@ function LoginForm() {
         return;
       }
 
-      router.push(from);
-      router.refresh();
+      window.location.href = from;
     } catch {
       setErrorMessage("Network error. Please check server connectivity.");
       setIsLoading(false);
