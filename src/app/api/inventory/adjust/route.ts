@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { adjustStock, quarantineBatch } from "@/services/inventory.service";
 import { MovementType } from "@prisma/client";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser();

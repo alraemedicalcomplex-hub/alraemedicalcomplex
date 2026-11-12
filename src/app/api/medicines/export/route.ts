@@ -3,6 +3,8 @@ import ExcelJS from "exceljs";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth/session";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const user = await getCurrentUser();

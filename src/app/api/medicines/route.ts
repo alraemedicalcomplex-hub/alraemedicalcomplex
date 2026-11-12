@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { getMedicines, createMedicine } from "@/services/medicine.service";
 import { medicineSchema } from "@/lib/validations";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser();

@@ -3,6 +3,8 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { executeSaleCheckout } from "@/services/pos.service";
 import { checkoutSchema } from "@/lib/validations";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: Request) {
   try {
     const user = await getCurrentUser();

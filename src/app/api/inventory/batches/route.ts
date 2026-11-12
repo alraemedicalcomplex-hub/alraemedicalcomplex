@@ -4,6 +4,8 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { createBatch } from "@/services/inventory.service";
 import { batchSchema } from "@/lib/validations";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser();
