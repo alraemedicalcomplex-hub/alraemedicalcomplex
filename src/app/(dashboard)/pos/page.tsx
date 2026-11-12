@@ -709,8 +709,8 @@ export default function POSTerminalPage() {
 
       {/* Completed Sale Receipt Modal (Thermal 80mm Print Layout) */}
       {completedSale && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm rounded-2xl border border-border bg-[#111827] p-5 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
+          <div className="relative w-full max-w-sm my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 shadow-2xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <span className="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4" />
@@ -718,7 +718,7 @@ export default function POSTerminalPage() {
               </span>
               <button
                 onClick={() => setCompletedSale(null)}
-                className="text-muted-foreground hover:text-foreground"
+                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -809,9 +809,18 @@ export default function POSTerminalPage() {
 
       {/* Modal: Quick Add Customer */}
       {showAddCustomer && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm rounded-2xl border border-border bg-[#111827] p-5 shadow-2xl space-y-4">
-            <h3 className="text-base font-bold text-foreground">Register New Patient</h3>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
+          <div className="relative w-full max-w-sm my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 shadow-2xl space-y-4">
+            <div className="flex items-start justify-between pb-2 border-b border-border/80">
+              <h3 className="text-base font-bold text-foreground">Register New Patient</h3>
+              <button
+                type="button"
+                onClick={() => setShowAddCustomer(false)}
+                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
             <div className="space-y-3">
               <div className="space-y-1">
                 <label className="text-xs font-medium text-slate-300">Patient Name *</label>

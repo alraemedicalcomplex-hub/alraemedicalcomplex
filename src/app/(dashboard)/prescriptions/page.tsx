@@ -13,6 +13,7 @@ import {
   Calendar,
   Pill,
   Search,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -407,10 +408,23 @@ export default function PrescriptionsPage() {
       </Card>
 
       {/* Modal: Record Prescription */}
+      {/* Modal: Add New Prescription */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
-            <h3 className="text-base font-bold text-foreground">Record Patient Prescription</h3>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
+          <div className="relative w-full max-w-xl my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
+            <div className="flex items-start justify-between pb-3 border-b border-border/80">
+              <div>
+                <h3 className="text-base font-bold text-foreground">Record Patient Prescription</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">Enter patient, doctor, and prescribed items</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddModal(false)}
+                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
             {formError && (
               <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">

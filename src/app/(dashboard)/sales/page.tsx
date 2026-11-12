@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Plus,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -280,8 +281,8 @@ export default function SalesHistoryPage() {
 
       {/* Sale Detail & Receipt Modal */}
       {selectedSale && !showReturnModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
+          <div className="relative w-full max-w-lg my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div>
                 <h3 className="text-base font-bold text-foreground">
@@ -289,9 +290,13 @@ export default function SalesHistoryPage() {
                 </h3>
                 <p className="text-xs text-muted-foreground">{formatDate(selectedSale.createdAt, true)}</p>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => setSelectedSale(null)}>
-                Close
-              </Button>
+              <button
+                type="button"
+                onClick={() => setSelectedSale(null)}
+                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
 
             {/* Items */}
@@ -337,14 +342,25 @@ export default function SalesHistoryPage() {
 
       {/* Return Modal */}
       {selectedSale && showReturnModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-md rounded-2xl border border-border bg-[#111827] p-6 shadow-2xl space-y-4">
-            <h3 className="text-base font-bold text-foreground">
-              Process Sales Return: {selectedSale.invoiceNumber}
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Total refund amount: <span className="font-bold text-foreground font-mono">{formatCurrency(selectedSale.totalAmount)}</span>
-            </p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
+          <div className="relative w-full max-w-md my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
+            <div className="flex items-start justify-between pb-2 border-b border-border/80">
+              <div>
+                <h3 className="text-base font-bold text-foreground">
+                  Process Sales Return: {selectedSale.invoiceNumber}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Refund: <span className="font-bold text-foreground font-mono">{formatCurrency(selectedSale.totalAmount)}</span>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowReturnModal(false)}
+                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
             <form onSubmit={handleReturnSubmit} className="space-y-4">
               <div className="space-y-1">

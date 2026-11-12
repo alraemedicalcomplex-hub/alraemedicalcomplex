@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   XCircle,
   Filter,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -424,14 +425,25 @@ export default function MedicinesPage() {
 
       {/* Modal: Add New Medicine */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl">
-            <h3 className="text-lg font-bold text-foreground mb-1">
-              Add New Medicine Master Record
-            </h3>
-            <p className="text-xs text-muted-foreground mb-4">
-              Enter pharmaceutical details, generic formula, and DRAP classification
-            </p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
+          <div className="relative w-full max-w-2xl my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl">
+            <div className="flex items-start justify-between pb-3 mb-4 border-b border-border/80">
+              <div>
+                <h3 className="text-lg font-bold text-foreground">
+                  Add New Medicine Master Record
+                </h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Enter pharmaceutical details, generic formula, and DRAP classification
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAddModal(false)}
+                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
             {formError && (
               <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-400">
@@ -608,12 +620,23 @@ export default function MedicinesPage() {
 
       {/* Modal: Bulk CSV Import */}
       {showImportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-xl rounded-2xl border border-border bg-[#111827] p-6 shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold text-foreground">Bulk CSV Medicine Import</h3>
-            <p className="text-xs text-muted-foreground">
-              Paste standard CSV rows with columns: <code>name,genericName,category,manufacturer,strength,dosageForm,barcode</code>
-            </p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
+          <div className="relative w-full max-w-xl my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
+            <div className="flex items-start justify-between pb-3 border-b border-border/80">
+              <div>
+                <h3 className="text-lg font-bold text-foreground">Bulk CSV Medicine Import</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Paste standard CSV rows with columns: <code>name,genericName,category,manufacturer,strength,dosageForm,barcode</code>
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowImportModal(false)}
+                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
 
             {importStatus && (
               <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/30 p-3 text-xs text-indigo-300">
