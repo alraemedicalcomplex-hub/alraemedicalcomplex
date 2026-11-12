@@ -259,86 +259,88 @@ export default function AccountingPage() {
 
       {/* Modal: Add Expense */}
       {showAddExpense && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-md my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between pb-2 border-b border-border/80">
-              <div>
-                <h3 className="text-base font-bold text-foreground">Record Operating Expense</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">Input disbursement vouchers & overheads</p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
+              <div className="flex items-start justify-between pb-3 border-b border-border/80">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">Record Operating Expense</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">Input disbursement vouchers & overheads</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAddExpense(false)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowAddExpense(false)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <form onSubmit={handleCreateExpense} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Expense Title *</label>
+                  <Input placeholder="e.g. October Commercial Electricity Bill" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Category *</label>
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value="RENT">Rent & Property</option>
+                      <option value="UTILITIES">Utilities (Electricity/Water/Net)</option>
+                      <option value="SALARIES">Staff Salaries & Allowances</option>
+                      <option value="SUPPLIES">Packaging, Bags & Receipt Rolls</option>
+                      <option value="LICENSES_PERMITS">DRAP & Health Department Fees</option>
+                      <option value="MAINTENANCE">Equipment / AC Maintenance</option>
+                      <option value="OTHER">Other Operating Expenses</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Amount (PKR) *</label>
+                    <Input type="number" step="0.01" placeholder="42500" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Payment Method</label>
+                    <select
+                      value={paymentMethod}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <option value="CASH">Cash Drawer</option>
+                      <option value="BANK_TRANSFER">Bank Transfer</option>
+                      <option value="CARD">Card</option>
+                      <option value="EASYPAISA_JAZZCASH">Mobile Wallet</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Paid To</label>
+                    <Input placeholder="e.g. LESCO, DHA..." value={paidTo} onChange={(e) => setPaidTo(e.target.value)} />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Notes / Invoice Ref</label>
+                  <Input placeholder="Bill consumer number, cheque number..." value={notes} onChange={(e) => setNotes(e.target.value)} />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+                  <Button variant="outline" size="sm" onClick={() => setShowAddExpense(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isSubmitting}>
+                    Save Expense
+                  </Button>
+                </div>
+              </form>
             </div>
-            <form onSubmit={handleCreateExpense} className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Expense Title *</label>
-                <Input placeholder="e.g. October Commercial Electricity Bill" value={title} onChange={(e) => setTitle(e.target.value)} required />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Category *</label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <option value="RENT">Rent & Property</option>
-                    <option value="UTILITIES">Utilities (Electricity/Water/Net)</option>
-                    <option value="SALARIES">Staff Salaries & Allowances</option>
-                    <option value="SUPPLIES">Packaging, Bags & Receipt Rolls</option>
-                    <option value="LICENSES_PERMITS">DRAP & Health Department Fees</option>
-                    <option value="MAINTENANCE">Equipment / AC Maintenance</option>
-                    <option value="OTHER">Other Operating Expenses</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Amount (PKR) *</label>
-                  <Input type="number" step="0.01" placeholder="42500" value={amount} onChange={(e) => setAmount(e.target.value)} required />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Payment Method</label>
-                  <select
-                    value={paymentMethod}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <option value="CASH">Cash Drawer</option>
-                    <option value="BANK_TRANSFER">Bank Transfer</option>
-                    <option value="CARD">Card</option>
-                    <option value="EASYPAISA_JAZZCASH">Mobile Wallet</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Paid To</label>
-                  <Input placeholder="e.g. LESCO, DHA..." value={paidTo} onChange={(e) => setPaidTo(e.target.value)} />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Notes / Invoice Ref</label>
-                <Input placeholder="Bill consumer number, cheque number..." value={notes} onChange={(e) => setNotes(e.target.value)} />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
-                <Button variant="outline" size="sm" onClick={() => setShowAddExpense(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isSubmitting}>
-                  Save Expense
-                </Button>
-              </div>
-            </form>
           </div>
         </div>
       )}

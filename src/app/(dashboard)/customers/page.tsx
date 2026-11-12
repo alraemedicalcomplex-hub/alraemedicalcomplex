@@ -318,115 +318,119 @@ export default function CustomersPage() {
 
       {/* Modal: Collect Payment */}
       {selectedPayCustomer && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-sm my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between pb-2 border-b border-border/80">
-              <div>
-                <h3 className="text-base font-bold text-foreground">
-                  Collect Credit Payment
-                </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">{selectedPayCustomer.name}</p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-md rounded-2xl border border-border bg-[#111827] p-6 text-left shadow-2xl space-y-4">
+              <div className="flex items-start justify-between pb-3 border-b border-border/80">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">
+                    Collect Credit Payment
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">{selectedPayCustomer.name}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPayCustomer(null)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelectedPayCustomer(null)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <p className="text-xs text-muted-foreground">
+                Current Outstanding Balance: <span className="font-mono font-bold text-foreground">{formatCurrency(selectedPayCustomer.balance)}</span>
+              </p>
+
+              <form onSubmit={handleRecordPayment} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Amount Received (PKR) *</label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    placeholder="e.g. 4500"
+                    value={payAmount}
+                    onChange={(e) => setPayAmount(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Notes / Receipt Ref</label>
+                  <Input
+                    placeholder="Cash settlement / receipt no..."
+                    value={payNotes}
+                    onChange={(e) => setPayNotes(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
+                  <Button variant="outline" size="sm" onClick={() => setSelectedPayCustomer(null)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white" isLoading={isProcessing}>
+                    Record Collection
+                  </Button>
+                </div>
+              </form>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Current Outstanding Balance: <span className="font-mono font-bold text-foreground">{formatCurrency(selectedPayCustomer.balance)}</span>
-            </p>
-
-            <form onSubmit={handleRecordPayment} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Amount Received (PKR) *</label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="e.g. 4500"
-                  value={payAmount}
-                  onChange={(e) => setPayAmount(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Notes / Receipt Ref</label>
-                <Input
-                  placeholder="Cash settlement / receipt no..."
-                  value={payNotes}
-                  onChange={(e) => setPayNotes(e.target.value)}
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
-                <Button variant="outline" size="sm" onClick={() => setSelectedPayCustomer(null)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white" isLoading={isProcessing}>
-                  Record Collection
-                </Button>
-              </div>
-            </form>
           </div>
         </div>
       )}
 
       {/* Modal: Add Patient */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-md my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between pb-2 border-b border-border/80">
-              <div>
-                <h3 className="text-base font-bold text-foreground">Register New Patient</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">Enter contact and address info</p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
+              <div className="flex items-start justify-between pb-3 border-b border-border/80">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">Register New Patient</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">Enter contact and address info</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowAddModal(false)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <form onSubmit={handleCreateCustomer} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Full Name *</label>
+                  <Input placeholder="e.g. Haji Muhammad Rafique" value={name} onChange={(e) => setName(e.target.value)} required />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Phone *</label>
+                    <Input placeholder="0300..." value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Email</label>
+                    <Input type="email" placeholder="patient@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Residential Address</label>
+                  <Input placeholder="House #, Street, City..." value={address} onChange={(e) => setAddress(e.target.value)} />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Approved Credit Ceiling (PKR)</label>
+                  <Input type="number" placeholder="10000" value={creditLimit} onChange={(e) => setCreditLimit(e.target.value)} />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+                  <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isProcessing}>
+                    Save Patient
+                  </Button>
+                </div>
+              </form>
             </div>
-            <form onSubmit={handleCreateCustomer} className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Full Name *</label>
-                <Input placeholder="e.g. Haji Muhammad Rafique" value={name} onChange={(e) => setName(e.target.value)} required />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Phone *</label>
-                  <Input placeholder="0300..." value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Email</label>
-                  <Input type="email" placeholder="patient@gmail.com" value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Residential Address</label>
-                <Input placeholder="House #, Street, City..." value={address} onChange={(e) => setAddress(e.target.value)} />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Approved Credit Ceiling (PKR)</label>
-                <Input type="number" placeholder="10000" value={creditLimit} onChange={(e) => setCreditLimit(e.target.value)} />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-border">
-                <Button variant="outline" size="sm" onClick={() => setShowAddModal(false)}>
-                  Cancel
-                </Button>
-                <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-500 text-white" isLoading={isProcessing}>
-                  Save Patient
-                </Button>
-              </div>
-            </form>
           </div>
         </div>
       )}

@@ -709,99 +709,101 @@ export default function POSTerminalPage() {
 
       {/* Completed Sale Receipt Modal (Thermal 80mm Print Layout) */}
       {completedSale && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-sm my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-border">
-              <span className="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4" />
-                Sale Recorded Successfully
-              </span>
-              <button
-                onClick={() => setCompletedSale(null)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            {/* Thermal Receipt Preview Area */}
-            <div id="printable-receipt" className="p-3 bg-white text-black font-mono text-[11px] rounded space-y-2 border">
-              <div className="text-center space-y-0.5 pb-2 border-b border-dashed border-gray-400">
-                <h4 className="font-bold text-sm tracking-tight">
-                  {completedSale.pharmacy?.name || "SUFI PHARMACY & WELLNESS"}
-                </h4>
-                <p className="text-[10px]">{completedSale.pharmacy?.address}, {completedSale.pharmacy?.city}</p>
-                <p className="text-[10px]">DSL No: {completedSale.pharmacy?.dslNumber || "DSL-LHR-2024-9812"}</p>
-                <p className="text-[10px]">NTN: {completedSale.pharmacy?.ntnNumber || "4329012-7"}</p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-sm rounded-2xl border border-border bg-[#111827] p-6 text-left shadow-2xl space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
+                <span className="text-sm font-bold text-emerald-400 flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4" />
+                  Sale Recorded Successfully
+                </span>
+                <button
+                  onClick={() => setCompletedSale(null)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
 
-              <div className="flex justify-between text-[10px] pb-1 border-b border-dashed border-gray-400">
-                <span>Invoice: {completedSale.invoiceNumber}</span>
-                <span>{formatDate(completedSale.createdAt, true)}</span>
-              </div>
-
-              {completedSale.customer && (
-                <div className="text-[10px] pb-1 border-b border-dashed border-gray-400">
-                  Patient: {completedSale.customer.name} ({completedSale.customer.phone})
+              {/* Thermal Receipt Preview Area */}
+              <div id="printable-receipt" className="p-3 bg-white text-black font-mono text-[11px] rounded space-y-2 border">
+                <div className="text-center space-y-0.5 pb-2 border-b border-dashed border-gray-400">
+                  <h4 className="font-bold text-sm tracking-tight">
+                    {completedSale.pharmacy?.name || "SUFI PHARMACY & WELLNESS"}
+                  </h4>
+                  <p className="text-[10px]">{completedSale.pharmacy?.address}, {completedSale.pharmacy?.city}</p>
+                  <p className="text-[10px]">DSL No: {completedSale.pharmacy?.dslNumber || "DSL-LHR-2024-9812"}</p>
+                  <p className="text-[10px]">NTN: {completedSale.pharmacy?.ntnNumber || "4329012-7"}</p>
                 </div>
-              )}
 
-              {/* Items List */}
-              <div className="space-y-1 py-1">
-                {completedSale.items?.map((item: any) => (
-                  <div key={item.id} className="flex justify-between">
-                    <div>
-                      <p className="font-bold">{item.medicine?.name}</p>
-                      <p className="text-[9px] text-gray-600">
-                        {item.quantity} × Rs.{Number(item.unitPrice).toFixed(2)}
-                      </p>
-                    </div>
-                    <span className="font-bold">Rs.{Number(item.totalPrice).toFixed(2)}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Totals */}
-              <div className="pt-2 border-t border-dashed border-gray-400 space-y-0.5 text-right font-bold text-xs">
-                <div className="flex justify-between">
-                  <span>Subtotal:</span>
-                  <span>Rs.{Number(completedSale.subtotal).toFixed(2)}</span>
+                <div className="flex justify-between text-[10px] pb-1 border-b border-dashed border-gray-400">
+                  <span>Invoice: {completedSale.invoiceNumber}</span>
+                  <span>{formatDate(completedSale.createdAt, true)}</span>
                 </div>
-                {Number(completedSale.discountAmount) > 0 && (
-                  <div className="flex justify-between text-red-600">
-                    <span>Discount:</span>
-                    <span>-Rs.{Number(completedSale.discountAmount).toFixed(2)}</span>
+
+                {completedSale.customer && (
+                  <div className="text-[10px] pb-1 border-b border-dashed border-gray-400">
+                    Patient: {completedSale.customer.name} ({completedSale.customer.phone})
                   </div>
                 )}
-                <div className="flex justify-between text-sm pt-1 border-t border-black">
-                  <span>TOTAL PAID:</span>
-                  <span>Rs.{Number(completedSale.totalAmount).toFixed(2)}</span>
+
+                {/* Items List */}
+                <div className="space-y-1 py-1">
+                  {completedSale.items?.map((item: any) => (
+                    <div key={item.id} className="flex justify-between">
+                      <div>
+                        <p className="font-bold">{item.medicine?.name}</p>
+                        <p className="text-[9px] text-gray-600">
+                          {item.quantity} × Rs.{Number(item.unitPrice).toFixed(2)}
+                        </p>
+                      </div>
+                      <span className="font-bold">Rs.{Number(item.totalPrice).toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Totals */}
+                <div className="pt-2 border-t border-dashed border-gray-400 space-y-0.5 text-right font-bold text-xs">
+                  <div className="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span>Rs.{Number(completedSale.subtotal).toFixed(2)}</span>
+                  </div>
+                  {Number(completedSale.discountAmount) > 0 && (
+                    <div className="flex justify-between text-red-600">
+                      <span>Discount:</span>
+                      <span>-Rs.{Number(completedSale.discountAmount).toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm pt-1 border-t border-black">
+                    <span>TOTAL PAID:</span>
+                    <span>Rs.{Number(completedSale.totalAmount).toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <div className="text-center text-[9px] pt-2 border-t border-dashed border-gray-400">
+                  <p>Thank you for choosing Sufi Pharmacy.</p>
+                  <p>Medicines once sold cannot be returned without receipt.</p>
+                  <p className="font-bold mt-1">Get Well Soon!</p>
                 </div>
               </div>
 
-              <div className="text-center text-[9px] pt-2 border-t border-dashed border-gray-400">
-                <p>Thank you for choosing Sufi Pharmacy.</p>
-                <p>Medicines once sold cannot be returned without receipt.</p>
-                <p className="font-bold mt-1">Get Well Soon!</p>
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCompletedSale(null)}
+                >
+                  Close
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={printReceipt}
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5"
+                >
+                  <Printer className="h-4 w-4" />
+                  Print Thermal Receipt
+                </Button>
               </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-2 pt-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setCompletedSale(null)}
-              >
-                Close
-              </Button>
-              <Button
-                size="sm"
-                onClick={printReceipt}
-                className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5"
-              >
-                <Printer className="h-4 w-4" />
-                Print Thermal Receipt
-              </Button>
             </div>
           </div>
         </div>
@@ -809,65 +811,67 @@ export default function POSTerminalPage() {
 
       {/* Modal: Quick Add Customer */}
       {showAddCustomer && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-sm my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between pb-2 border-b border-border/80">
-              <h3 className="text-base font-bold text-foreground">Register New Patient</h3>
-              <button
-                type="button"
-                onClick={() => setShowAddCustomer(false)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Patient Name *</label>
-                <Input
-                  placeholder="e.g. Muhammad Aslam"
-                  value={newCustName}
-                  onChange={(e) => setNewCustName(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Phone Number *</label>
-                <Input
-                  placeholder="03001234567"
-                  value={newCustPhone}
-                  onChange={(e) => setNewCustPhone(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <Button variant="outline" size="sm" onClick={() => setShowAddCustomer(false)}>
-                  Cancel
-                </Button>
-                <Button
-                  size="sm"
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white"
-                  onClick={async () => {
-                    if (!newCustName || !newCustPhone) return;
-                    const res = await fetch("/api/pos/customers", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ name: newCustName, phone: newCustPhone }),
-                    });
-                    const d = await res.json();
-                    if (d.customer) {
-                      setCustomers((prev) => [d.customer, ...prev]);
-                      setSelectedCustomerId(d.customer.id);
-                      setShowAddCustomer(false);
-                      setNewCustName("");
-                      setNewCustPhone("");
-                    }
-                  }}
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-sm rounded-2xl border border-border bg-[#111827] p-6 text-left shadow-2xl space-y-4">
+              <div className="flex items-start justify-between pb-2 border-b border-border/80">
+                <h3 className="text-lg font-bold text-foreground">Register New Patient</h3>
+                <button
+                  type="button"
+                  onClick={() => setShowAddCustomer(false)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
                 >
-                  Save Patient
-                </Button>
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Patient Name *</label>
+                  <Input
+                    placeholder="e.g. Muhammad Aslam"
+                    value={newCustName}
+                    onChange={(e) => setNewCustName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Phone Number *</label>
+                  <Input
+                    placeholder="03001234567"
+                    value={newCustPhone}
+                    onChange={(e) => setNewCustPhone(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-border/50">
+                  <Button variant="outline" size="sm" onClick={() => setShowAddCustomer(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white"
+                    onClick={async () => {
+                      if (!newCustName || !newCustPhone) return;
+                      const res = await fetch("/api/pos/customers", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ name: newCustName, phone: newCustPhone }),
+                      });
+                      const d = await res.json();
+                      if (d.customer) {
+                        setCustomers((prev) => [d.customer, ...prev]);
+                        setSelectedCustomerId(d.customer.id);
+                        setShowAddCustomer(false);
+                        setNewCustName("");
+                        setNewCustPhone("");
+                      }
+                    }}
+                  >
+                    Save Patient
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

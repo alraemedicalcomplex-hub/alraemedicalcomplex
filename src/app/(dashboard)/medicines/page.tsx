@@ -425,25 +425,26 @@ export default function MedicinesPage() {
 
       {/* Modal: Add New Medicine */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-2xl my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl">
-            <div className="flex items-start justify-between pb-3 mb-4 border-b border-border/80">
-              <div>
-                <h3 className="text-lg font-bold text-foreground">
-                  Add New Medicine Master Record
-                </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Enter pharmaceutical details, generic formula, and DRAP classification
-                </p>
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-2xl rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl">
+              <div className="flex items-start justify-between pb-4 mb-6 border-b border-border/80">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">
+                    Add New Medicine Master Record
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter pharmaceutical details, generic formula, and DRAP classification
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowAddModal(false)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
 
             {formError && (
               <div className="mb-4 rounded-lg bg-red-500/10 border border-red-500/30 p-3 text-xs text-red-400">
@@ -616,57 +617,60 @@ export default function MedicinesPage() {
             </form>
           </div>
         </div>
+      </div>
       )}
 
       {/* Modal: Bulk CSV Import */}
       {showImportModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-xl my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between pb-3 border-b border-border/80">
-              <div>
-                <h3 className="text-lg font-bold text-foreground">Bulk CSV Medicine Import</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Paste standard CSV rows with columns: <code>name,genericName,category,manufacturer,strength,dosageForm,barcode</code>
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowImportModal(false)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            {importStatus && (
-              <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/30 p-3 text-xs text-indigo-300">
-                {importStatus}
-              </div>
-            )}
-
-            <form onSubmit={handleCSVImport} className="space-y-4">
-              <textarea
-                rows={8}
-                value={csvText}
-                onChange={(e) => setCsvText(e.target.value)}
-                placeholder={`name,genericName,category,manufacturer,strength,dosageForm,barcode\nDisprin 300mg,Aspirin,Analgesics,Reckitt Benckiser,300mg,TABLET,8964000998811\nFlagyl 400mg,Metronidazole,Antibiotics,Sanofi Pakistan,400mg,TABLET,8964000441122`}
-                className="w-full font-mono text-xs p-3 rounded-lg border border-input bg-card text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                required
-              />
-
-              <div className="flex items-center justify-end gap-3">
-                <Button
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-xl rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
+              <div className="flex items-start justify-between pb-4 border-b border-border/80">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">Bulk CSV Medicine Import</h3>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Paste standard CSV rows with columns: <code>name,genericName,category,manufacturer,strength,dosageForm,barcode</code>
+                  </p>
+                </div>
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => setShowImportModal(false)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
                 >
-                  Close
-                </Button>
-                <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white">
-                  Execute Import
-                </Button>
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-            </form>
+
+              {importStatus && (
+                <div className="rounded-lg bg-indigo-500/10 border border-indigo-500/30 p-3 text-xs text-indigo-300">
+                  {importStatus}
+                </div>
+              )}
+
+              <form onSubmit={handleCSVImport} className="space-y-4">
+                <textarea
+                  rows={8}
+                  value={csvText}
+                  onChange={(e) => setCsvText(e.target.value)}
+                  placeholder={`name,genericName,category,manufacturer,strength,dosageForm,barcode\nDisprin 300mg,Aspirin,Analgesics,Reckitt Benckiser,300mg,TABLET,8964000998811\nFlagyl 400mg,Metronidazole,Antibiotics,Sanofi Pakistan,400mg,TABLET,8964000441122`}
+                  className="w-full font-mono text-xs p-3 rounded-lg border border-input bg-card text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  required
+                />
+
+                <div className="flex items-center justify-end gap-3 pt-2 border-t border-border/50">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowImportModal(false)}
+                  >
+                    Close
+                  </Button>
+                  <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white">
+                    Execute Import
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

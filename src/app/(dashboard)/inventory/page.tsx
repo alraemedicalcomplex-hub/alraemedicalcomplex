@@ -439,226 +439,230 @@ function InventoryContent() {
 
       {/* Modal: Adjust Stock */}
       {adjustBatch && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-md my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between pb-3 border-b border-border/80">
-              <div>
-                <h3 className="text-lg font-bold text-foreground">
-                  Adjust Stock: {adjustBatch.medicine.name}
-                </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Batch: <span className="font-mono text-indigo-400">{adjustBatch.batchNumber}</span> • Current: <span className="font-bold text-foreground">{adjustBatch.quantity}</span>
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setAdjustBatch(null)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            {adjustError && (
-              <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
-                {adjustError}
-              </div>
-            )}
-
-            <form onSubmit={handleAdjustSubmit} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">
-                  Adjustment Delta (Signed Integer) *
-                </label>
-                <Input
-                  type="number"
-                  placeholder="e.g. -5 (for breakage) or +10 (for found stock)"
-                  value={adjustDelta}
-                  onChange={(e) => setAdjustDelta(e.target.value)}
-                  required
-                />
-                <p className="text-[10px] text-muted-foreground">
-                  Use negative numbers (e.g. -2) to deduct damaged/expired stock, positive (+5) to add.
-                </p>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Reason Category *</label>
-                <select
-                  value={adjustType}
-                  onChange={(e) => setAdjustType(e.target.value)}
-                  className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <option value="ADJUSTMENT_AUDIT">Physical Stock Recount Reconciliation</option>
-                  <option value="ADJUSTMENT_DAMAGE">Damaged / Broken Packaging</option>
-                  <option value="ADJUSTMENT_EXPIRED">Expired Stock Isolation</option>
-                  <option value="DISPOSAL">Controlled Medical Waste Disposal</option>
-                </select>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Audit Notes *</label>
-                <Input
-                  placeholder="Explain why this adjustment is authorized..."
-                  value={adjustReason}
-                  onChange={(e) => setAdjustReason(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-                <Button
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
+              <div className="flex items-start justify-between pb-3 border-b border-border/80">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">
+                    Adjust Stock: {adjustBatch.medicine.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Batch: <span className="font-mono text-indigo-400">{adjustBatch.batchNumber}</span> • Current: <span className="font-bold text-foreground">{adjustBatch.quantity}</span>
+                  </p>
+                </div>
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => setAdjustBatch(null)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
                 >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white"
-                  isLoading={isAdjusting}
-                >
-                  Commit Adjustment
-                </Button>
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-            </form>
+
+              {adjustError && (
+                <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
+                  {adjustError}
+                </div>
+              )}
+
+              <form onSubmit={handleAdjustSubmit} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">
+                    Adjustment Delta (Signed Integer) *
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="e.g. -5 (for breakage) or +10 (for found stock)"
+                    value={adjustDelta}
+                    onChange={(e) => setAdjustDelta(e.target.value)}
+                    required
+                  />
+                  <p className="text-[10px] text-muted-foreground">
+                    Use negative numbers (e.g. -2) to deduct damaged/expired stock, positive (+5) to add.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Reason Category *</label>
+                  <select
+                    value={adjustType}
+                    onChange={(e) => setAdjustType(e.target.value)}
+                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="ADJUSTMENT_AUDIT">Physical Stock Recount Reconciliation</option>
+                    <option value="ADJUSTMENT_DAMAGE">Damaged / Broken Packaging</option>
+                    <option value="ADJUSTMENT_EXPIRED">Expired Stock Isolation</option>
+                    <option value="DISPOSAL">Controlled Medical Waste Disposal</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Audit Notes *</label>
+                  <Input
+                    placeholder="Explain why this adjustment is authorized..."
+                    value={adjustReason}
+                    onChange={(e) => setAdjustReason(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setAdjustBatch(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white"
+                    isLoading={isAdjusting}
+                  >
+                    Commit Adjustment
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
 
       {/* Modal: Intake New Batch */}
       {showAddBatchModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-full items-start sm:items-center justify-center">
-          <div className="relative w-full max-w-lg my-4 sm:my-auto max-h-[calc(100vh-2rem)] sm:max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
-            <div className="flex items-start justify-between pb-3 border-b border-border/80">
-              <div>
-                <h3 className="text-lg font-bold text-foreground">Intake New Medicine Batch</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  Add individual batch with manufacturing and expiration details
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowAddBatchModal(false)}
-                className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-3"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-
-            {addBatchError && (
-              <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
-                {addBatchError}
-              </div>
-            )}
-
-            <form onSubmit={handleAddBatch} className="space-y-4">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Select Medicine *</label>
-                <select
-                  value={newMedicineId}
-                  onChange={(e) => setNewMedicineId(e.target.value)}
-                  className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  required
-                >
-                  {medicines.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Batch / Lot Number *</label>
-                  <Input
-                    placeholder="e.g. BTH-2026-90"
-                    value={newBatchNumber}
-                    onChange={(e) => setNewBatchNumber(e.target.value)}
-                    required
-                  />
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm">
+          <div className="flex min-h-full items-center justify-center p-4 sm:p-6 text-center">
+            <div className="w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 sm:p-8 text-left shadow-2xl space-y-4">
+              <div className="flex items-start justify-between pb-3 border-b border-border/80">
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">Intake New Medicine Batch</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Add individual batch with manufacturing and expiration details
+                  </p>
                 </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Expiry Date *</label>
-                  <Input
-                    type="date"
-                    value={newExpiry}
-                    onChange={(e) => setNewExpiry(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Purchase Cost (PKR) *</label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    placeholder="650"
-                    value={newCost}
-                    onChange={(e) => setNewCost(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Trade Price (PKR) *</label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    placeholder="720"
-                    value={newTrade}
-                    onChange={(e) => setNewTrade(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-xs font-medium text-slate-300">Retail / MRP (PKR) *</label>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    placeholder="800"
-                    value={newRetail}
-                    onChange={(e) => setNewRetail(e.target.value)}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-slate-300">Opening Quantity *</label>
-                <Input
-                  type="number"
-                  placeholder="50"
-                  value={newQty}
-                  onChange={(e) => setNewQty(e.target.value)}
-                  min="0"
-                  required
-                />
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-                <Button
+                <button
                   type="button"
-                  variant="outline"
                   onClick={() => setShowAddBatchModal(false)}
+                  className="h-8 w-8 rounded-lg border border-border bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition shrink-0 ml-4"
                 >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white"
-                  isLoading={isAddingBatch}
-                >
-                  Save Batch
-                </Button>
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-            </form>
+
+              {addBatchError && (
+                <div className="rounded-lg bg-red-500/10 border border-red-500/30 p-2.5 text-xs text-red-400">
+                  {addBatchError}
+                </div>
+              )}
+
+              <form onSubmit={handleAddBatch} className="space-y-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Select Medicine *</label>
+                  <select
+                    value={newMedicineId}
+                    onChange={(e) => setNewMedicineId(e.target.value)}
+                    className="flex h-10 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    required
+                  >
+                    {medicines.map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Batch / Lot Number *</label>
+                    <Input
+                      placeholder="e.g. BTH-2026-90"
+                      value={newBatchNumber}
+                      onChange={(e) => setNewBatchNumber(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Expiry Date *</label>
+                    <Input
+                      type="date"
+                      value={newExpiry}
+                      onChange={(e) => setNewExpiry(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Purchase Cost (PKR) *</label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="650"
+                      value={newCost}
+                      onChange={(e) => setNewCost(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Trade Price (PKR) *</label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="720"
+                      value={newTrade}
+                      onChange={(e) => setNewTrade(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-slate-300">Retail / MRP (PKR) *</label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="800"
+                      value={newRetail}
+                      onChange={(e) => setNewRetail(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-slate-300">Opening Quantity *</label>
+                  <Input
+                    type="number"
+                    placeholder="50"
+                    value={newQty}
+                    onChange={(e) => setNewQty(e.target.value)}
+                    min="0"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowAddBatchModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white"
+                    isLoading={isAddingBatch}
+                  >
+                    Save Batch
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
