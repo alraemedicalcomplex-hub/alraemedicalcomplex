@@ -107,6 +107,20 @@
   animation: pageEnter 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Mobile drawer slide in from left */
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* Pulsing radar dots for live indicators */
 @keyframes pulseRing {
   0% {

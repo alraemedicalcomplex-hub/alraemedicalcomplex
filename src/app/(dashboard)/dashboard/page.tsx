@@ -39,10 +39,10 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border bg-gradient-to-r from-card via-card to-indigo-950/20 p-6 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border bg-gradient-to-r from-card via-card to-indigo-950/20 p-4 sm:p-6 shadow-sm">
         <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
               {pharmacy?.name || "Al Rae Hospital"}
             </h1>
             <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-xs font-semibold text-emerald-400">
@@ -50,23 +50,23 @@ export default async function DashboardPage() {
               DSL: {pharmacy?.dslNumber || "Active"}
             </span>
           </div>
-          <p className="text-xs text-muted-foreground flex items-center gap-2">
-            <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
+          <p className="text-xs text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1">
+            <Building2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             <span>{pharmacy?.address}, {pharmacy?.city}</span>
-            <span>•</span>
+            <span className="hidden sm:inline">•</span>
             <span className="font-mono text-indigo-400">Timezone: {pharmacy?.timezone}</span>
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Link href="/pos">
-            <Button className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 shadow-md shadow-indigo-600/20">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
+          <Link href="/pos" className="w-full sm:w-auto">
+            <Button className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 shadow-md shadow-indigo-600/20 justify-center">
               <ShoppingCart className="h-4 w-4" />
               <span>Open POS (F2)</span>
             </Button>
           </Link>
-          <Link href="/reports">
-            <Button variant="outline" className="gap-1.5">
+          <Link href="/reports" className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full sm:w-auto gap-1.5 justify-center">
               <span>View Financial Reports</span>
               <ArrowUpRight className="h-4 w-4" />
             </Button>

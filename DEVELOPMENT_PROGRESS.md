@@ -26,3 +26,11 @@
 
 ---
 *Status: All 15 Pharmacy Modules Fully Engineered, Integrated, Tested, and Production-Ready.*
+
+## Mobile Optimization, Logo Unification & Sidebar Layout (Nov 10, 2026)
+- **Unified Hospital Logo Component**: Integrated `/favicon.svg` medical-cross branding across [`HospitalLogo`](file:///home/ben/rdp/Sufi_DOG/src/components/ui/hospital-logo.tsx), header navigation, sidebar branding (both expanded & collapsed states), and login authentication screens.
+- **Sidebar Minimized State Fix**: Placed the desktop collapse/expand toggle on the right seam (`absolute -right-3.5 top-5`), perfectly centering the shield hospital logo without layout overlap or button squishing.
+- **Mobile Navigation Auto-Close**: Sidebar drawer now automatically hides whenever any navigation item is tapped or a route transition occurs.
+- **Home Dashboard Mobile Ribbon Fix**: Made the welcome banner action buttons (**Open POS** and **View Financial Reports**) full-width and touch-friendly on mobile viewports (`flex flex-col sm:flex-row items-stretch sm:items-center w-full sm:w-auto`).
+- **Financial Reports Mobile Scrolling**: Made report category tabs horizontally scrollable chips (`overflow-x-auto no-scrollbar`) with flexible action buttons on mobile.
+- **Production Server**: Successfully compiled production build (`npm run build`) and active on port 3000.

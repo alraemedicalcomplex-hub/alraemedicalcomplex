@@ -63,28 +63,28 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <BarChart3 className="h-6 w-6 text-indigo-500" />
-            Executive Reports & Financial Statements
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <BarChart3 className="h-6 w-6 text-indigo-500 shrink-0" />
+            <span>Executive Reports & Financial Statements</span>
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
             Real database audit queries, inventory valuation, P&L reporting, and CSV/PDF data exports
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
             size="sm"
             variant="outline"
             onClick={() => window.print()}
-            className="text-xs gap-1.5"
+            className="text-xs gap-1.5 flex-1 sm:flex-initial justify-center"
           >
             <Printer className="h-4 w-4" />
             Print Report (PDF)
           </Button>
 
-          <a href="/api/reports/sales?format=csv" download>
-            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs gap-1.5 shadow-sm">
+          <a href="/api/reports/sales?format=csv" download className="flex-1 sm:flex-initial">
+            <Button size="sm" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs gap-1.5 shadow-sm justify-center">
               <Download className="h-4 w-4" />
               Download Sales CSV
             </Button>
@@ -93,10 +93,10 @@ export default function ReportsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border pb-2">
+      <div className="flex overflow-x-auto no-scrollbar gap-2 border-b border-border pb-2">
         <button
           onClick={() => setActiveTab("sales")}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold transition ${
+          className={`shrink-0 px-3.5 py-2 rounded-lg text-xs font-semibold transition ${
             activeTab === "sales"
               ? "bg-indigo-600 text-white shadow-sm"
               : "text-muted-foreground hover:bg-muted"
@@ -107,7 +107,7 @@ export default function ReportsPage() {
 
         <button
           onClick={() => setActiveTab("inventory")}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold transition ${
+          className={`shrink-0 px-3.5 py-2 rounded-lg text-xs font-semibold transition ${
             activeTab === "inventory"
               ? "bg-indigo-600 text-white shadow-sm"
               : "text-muted-foreground hover:bg-muted"
@@ -118,7 +118,7 @@ export default function ReportsPage() {
 
         <button
           onClick={() => setActiveTab("pl")}
-          className={`px-4 py-2 rounded-lg text-xs font-semibold transition ${
+          className={`shrink-0 px-3.5 py-2 rounded-lg text-xs font-semibold transition ${
             activeTab === "pl"
               ? "bg-indigo-600 text-white shadow-sm"
               : "text-muted-foreground hover:bg-muted"

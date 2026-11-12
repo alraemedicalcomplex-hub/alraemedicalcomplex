@@ -2,9 +2,10 @@
 
 import React, { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ShieldCheck, Lock, Mail, AlertCircle, ArrowRight, Pill } from "lucide-react";
+import { Lock, Mail, AlertCircle, ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { HospitalLogo } from "@/components/ui/hospital-logo";
 
 function LoginForm() {
   const router = useRouter();
@@ -48,8 +49,8 @@ function LoginForm() {
     <div className="w-full max-w-md space-y-6">
       {/* Brand Header */}
       <div className="text-center space-y-2">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-emerald-500 shadow-xl shadow-indigo-500/25">
-          <Pill className="h-8 w-8 text-white" />
+        <div className="mx-auto flex h-14 w-14 items-center justify-center">
+          <HospitalLogo className="h-14 w-14 shadow-xl shadow-indigo-500/25" size={56} />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-white">
           Al Rae Hospital
@@ -70,10 +71,10 @@ function LoginForm() {
           )}
 
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-slate-300">Staff Username or Email</label>
+            <label className="text-xs font-medium text-slate-300">Username or Email</label>
             <Input
               type="text"
-              placeholder="sufiyan or email..."
+              placeholder="Username or email..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               icon={<Mail className="h-4 w-4" />}

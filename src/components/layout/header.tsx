@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
+import { HospitalLogo } from "@/components/ui/hospital-logo";
 
 interface HeaderProps {
   user?: {
@@ -60,7 +61,7 @@ export function Header({ user, onMobileToggle }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-border bg-card/80 px-4 md:px-6 backdrop-blur-md">
-      {/* Left side: Mobile menu toggle + Live Clock */}
+      {/* Left side: Mobile menu toggle + Hospital Favicon Logo + Live Clock */}
       <div className="flex items-center gap-3">
         <button
           onClick={onMobileToggle}
@@ -69,7 +70,20 @@ export function Header({ user, onMobileToggle }: HeaderProps) {
           <Menu className="h-5 w-5" />
         </button>
 
-        <div className="hidden sm:flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-1.5 border border-border/60 text-xs font-mono text-muted-foreground">
+        {/* Brand Favicon Logo on Header */}
+        <div className="flex items-center gap-2.5">
+          <HospitalLogo className="h-8 w-8 rounded-lg shadow-sm" size={32} />
+          <div className="flex flex-col">
+            <span className="font-bold text-xs sm:text-sm tracking-wide text-foreground leading-tight">
+              AL RAE HOSPITAL
+            </span>
+            <span className="text-[10px] text-emerald-500 font-medium hidden sm:block">
+              Hospital Pharmacy & ERP
+            </span>
+          </div>
+        </div>
+
+        <div className="hidden md:flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-1.5 border border-border/60 text-xs font-mono text-muted-foreground ml-2">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />

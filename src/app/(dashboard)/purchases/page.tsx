@@ -280,8 +280,8 @@ export default function PurchasesPage() {
 
       {/* Modal: Create Purchase Order */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl rounded-2xl border border-border bg-[#111827] p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
             <h3 className="text-lg font-bold text-foreground">Create Purchase Order</h3>
             <p className="text-xs text-muted-foreground">
               Select supplier and input medicine batches to procure

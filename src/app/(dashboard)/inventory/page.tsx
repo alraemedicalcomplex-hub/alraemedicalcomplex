@@ -517,8 +517,8 @@ function InventoryContent() {
 
       {/* Modal: Intake New Batch */}
       {showAddBatchModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg rounded-2xl border border-border bg-[#111827] p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
             <h3 className="text-lg font-bold text-foreground">Intake New Medicine Batch</h3>
             <p className="text-xs text-muted-foreground">
               Add individual batch with manufacturing and expiration details

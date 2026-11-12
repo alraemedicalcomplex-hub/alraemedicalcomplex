@@ -408,8 +408,8 @@ export default function PrescriptionsPage() {
 
       {/* Modal: Record Prescription */}
       {showAddModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="relative w-full max-w-xl rounded-2xl border border-border bg-[#111827] p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm">
+          <div className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border bg-[#111827] p-5 sm:p-6 shadow-2xl space-y-4">
             <h3 className="text-base font-bold text-foreground">Record Patient Prescription</h3>
 
             {formError && (

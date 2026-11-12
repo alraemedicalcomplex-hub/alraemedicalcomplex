@@ -113,7 +113,6 @@ export async function seedSampleMedicines() {
 
     const batch = await prisma.medicineBatch.create({
       data: {
-        pharmacyId,
         medicineId: med.id,
         batchNumber: `BAT-${Date.now().toString().slice(-6)}`,
         purchaseCost: m.cost,

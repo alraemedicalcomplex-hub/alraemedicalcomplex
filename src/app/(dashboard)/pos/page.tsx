@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, cn } from "@/lib/utils";
 import { POSCartItem, POSHeldSale } from "@/types";
 
 export default function POSTerminalPage() {
@@ -65,6 +65,7 @@ export default function POSTerminalPage() {
 
   // Completed sale receipt modal
   const [completedSale, setCompletedSale] = useState<any>(null);
+  const [mobilePosTab, setMobilePosTab] = useState<"catalog" | "cart">("catalog");
 
   // Fetch initial customers
   const fetchCustomers = async (q: string = "") => {
@@ -343,10 +344,43 @@ export default function POSTerminalPage() {
         </div>
       )}
 
+      {/* Mobile Tab Switcher for Touch Devices */}
+      <div className="grid grid-cols-2 gap-2 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setMobilePosTab("catalog")}
+          className={cn(
+            "py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2",
+            mobilePosTab === "catalog"
+              ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/25"
+              : "bg-card border border-border text-muted-foreground hover:bg-muted"
+          )}
+        >
+          <Search className="h-4 w-4" />
+          <span>Product Catalog</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMobilePosTab("cart")}
+          className={cn(
+            "py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2",
+            mobilePosTab === "cart"
+              ? "bg-emerald-600 text-white shadow-md shadow-emerald-600/25"
+              : "bg-card border border-border text-muted-foreground hover:bg-muted"
+          )}
+        >
+          <ShoppingCart className="h-4 w-4" />
+          <span>
+            Cart ({cart.length}) • {formatCurrency(totalAmount)}
+          </span>
+        </button>
+      </div>
+
       {/* Main Grid: Left Search & Catalog | Right Cart & Checkout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Side: Product Search & Barcode Scanner (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
+        <div className={cn("lg:col-span-7 space-y-4", mobilePosTab === "catalog" ? "block" : "hidden lg:block")}>
           {/* Dual Input Search: Barcode + Text Search */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <form onSubmit={handleBarcodeScan} className="relative">
@@ -442,7 +476,7 @@ export default function POSTerminalPage() {
         </div>
 
         {/* Right Side: Cart, Patient Selection & Totals (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className={cn("lg:col-span-5 space-y-4", mobilePosTab === "cart" ? "block" : "hidden lg:block")}>
           <Card className="flex flex-col h-full border-border">
             {/* Customer Picker */}
             <div className="p-3.5 border-b border-border bg-muted/20 flex items-center justify-between gap-2">

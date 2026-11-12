@@ -22,8 +22,10 @@ import {
   ChevronRight,
   ShieldCheck,
   PackagePlus,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { HospitalLogo } from "@/components/ui/hospital-logo";
 
 interface NavItem {
   title: string;
@@ -84,9 +86,11 @@ const NAVIGATION_GROUPS: NavGroup[] = [
 export function Sidebar({
   isCollapsed,
   setIsCollapsed,
+  onNavigate,
 }: {
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -97,35 +101,55 @@ export function Sidebar({
         isCollapsed ? "w-20" : "w-64"
       )}
     >
+      {/* Desktop Floating Collapse/Expand Seam Toggle */}
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="hidden md:flex absolute -right-3.5 top-5 z-40 h-7 w-7 items-center justify-center rounded-full border border-slate-700 bg-[#131B2E] text-slate-300 shadow-md shadow-black/40 hover:bg-indigo-600 hover:text-white hover:border-indigo-400 transition-all focus:outline-none"
+        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+      </button>
+
       {/* Brand Header */}
-      <div className="flex h-16 items-center justify-between px-4 border-b border-border/80">
+      <div
+        className={cn(
+          "flex h-16 items-center border-b border-border/80 transition-all",
+          isCollapsed ? "justify-center px-2" : "justify-between px-4"
+        )}
+      >
         {!isCollapsed ? (
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 shadow-md shadow-indigo-500/20">
-              <ShieldCheck className="h-6 w-6 text-white" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-sm tracking-wide text-white leading-tight">
+          <div className="flex items-center gap-3 min-w-0">
+            <HospitalLogo className="h-10 w-10 shadow-md shadow-indigo-500/20" size={40} />
+            <div className="flex flex-col min-w-0">
+              <span className="font-bold text-sm tracking-wide text-white leading-tight truncate">
                 AL RAE HOSPITAL
               </span>
-              <span className="text-[11px] font-medium text-emerald-400">
+              <span className="text-[11px] font-medium text-emerald-400 truncate">
                 Hospital Pharmacy & ERP
               </span>
             </div>
           </div>
         ) : (
-          <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 shadow-md shadow-indigo-500/20">
-            <ShieldCheck className="h-6 w-6 text-white" />
-          </div>
+          <button
+            onClick={() => setIsCollapsed(false)}
+            title="Expand menu (Al Rae Hospital)"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl hover:scale-105 hover:ring-2 hover:ring-indigo-400/50 transition"
+          >
+            <HospitalLogo className="h-10 w-10 shadow-md shadow-indigo-500/20" size={40} />
+          </button>
         )}
 
-        <button
-          onClick={() => setIsCollapsed(!isCollapsed)}
-          className="hidden md:flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition"
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-        </button>
+        {/* Mobile Close Button (shown only in mobile drawer mode) */}
+        {onNavigate && (
+          <button
+            onClick={onNavigate}
+            className="md:hidden flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition"
+            aria-label="Close menu"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* Navigation Links */}
@@ -146,6 +170,7 @@ export function Sidebar({
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={() => onNavigate?.()}
                   title={isCollapsed ? item.title : undefined}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-all group relative",
